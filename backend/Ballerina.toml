@@ -2,6 +2,11 @@
 org = "ecommerce"
 name = "ballerina_backend"
 version = "0.1.0"
-distribution = "2201.10.0"
+distribution = "2201.13.4"
 
 [dependencies]
+
+[[platform.java21.dependency]]
+groupId = "org.postgresql"
+artifactId = "postgresql"
+version = "42.6.1"
