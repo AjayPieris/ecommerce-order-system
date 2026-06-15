@@ -1,10 +1,6 @@
 import ballerina/http;
 import ballerina/log;
-import ballerinax/postgresql;
-import ballerinax/postgresql.driver as _;
 import ballerina/sql;
-
-// ─── Types ───────────────────────────────────────────────
 
 type Notification record {|
     int id;
@@ -27,8 +23,6 @@ type OrderStatusNotification record {|
     decimal total_amount;
 |};
 
-// ─── Notification Service ─────────────────────────────────
-
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
@@ -39,9 +33,9 @@ type OrderStatusNotification record {|
 }
 service /api/notifications on new http:Listener(9093) {
 
-    // POST /api/notifications — create notification log
+    // create a notification log entry
     resource function post .(NewNotification newNotif) returns Notification|error {
-        log:printInfo("Creating notification for order: " + newNotif.order_id.toString());
+        log:printInfo("Creating notification for order " + newNotif.order_id.toString());
 
         sql:ParameterizedQuery query = `INSERT INTO notifications
                                         (order_id, type, message)
@@ -51,40 +45,35 @@ service /api/notifications on new http:Listener(9093) {
                                         message, sent_at::text as sent_at`;
 
         Notification result = check dbClient->queryRow(query);
-        log:printInfo("✅ Notification logged: #" + result.id.toString());
+        log:printInfo("Notification #" + result.id.toString() + " logged");
         return result;
     }
 
-    // POST /api/notifications/order-status — send order status notification
-    resource function post order\-status(OrderStatusNotification notif) 
+    // send an order status notification (email)
+    resource function post 'order\-status(OrderStatusNotification notif) 
                                          returns http:Ok|error {
-        log:printInfo("📧 Sending order status notification...");
-        log:printInfo("   Order    #" + notif.order_id.toString());
-        log:printInfo("   Status → " + notif.status);
-        log:printInfo("   Email  → " + notif.customer_email);
+        log:printInfo("Sending status notification for order #" + notif.order_id.toString() +
+                      " (" + notif.status + ") to " + notif.customer_email);
 
-        // Build message based on status
         string message = buildStatusMessage(
             notif.order_id,
             notif.status,
             notif.total_amount
         );
 
-        // Log to database
+        // save to db
         sql:ParameterizedQuery query = `INSERT INTO notifications
                                         (order_id, type, message)
                                         VALUES (${notif.order_id}, 'EMAIL', ${message})`;
         _ = check dbClient->execute(query);
 
-        // In real world → send actual email via SMTP or SendGrid
-        // For now → just log it
-        log:printInfo("📧 Email notification sent to: " + notif.customer_email);
-        log:printInfo("📧 Message: " + message);
+        // TODO: send actual email via sendgrid or smtp
+        log:printInfo("Email sent to " + notif.customer_email + ": " + message);
 
         return http:OK;
     }
 
-    // GET /api/notifications — get all notifications (admin)
+    // get all notifications
     resource function get .() returns Notification[]|error {
         log:printInfo("Fetching all notifications");
 
@@ -104,9 +93,9 @@ service /api/notifications on new http:Listener(9093) {
         return notifications;
     }
 
-    // GET /api/notifications/order/[orderId] — get notifications for an order
-    resource function get order/[int orderId]() returns Notification[]|error {
-        log:printInfo("Fetching notifications for order: " + orderId.toString());
+    // get notifications for a specific order
+    resource function get 'order/[int orderId]() returns Notification[]|error {
+        log:printInfo("Fetching notifications for order #" + orderId.toString());
 
         sql:ParameterizedQuery query = `SELECT id, order_id, type,
                                         message, sent_at::text as sent_at
@@ -126,8 +115,7 @@ service /api/notifications on new http:Listener(9093) {
     }
 }
 
-// ─── Helper Functions ─────────────────────────────────────
-
+// builds the email body based on the order status
 function buildStatusMessage(int orderId, string status, decimal totalAmount) returns string {
     match status {
         "PAYMENT_CONFIRMED" => {
