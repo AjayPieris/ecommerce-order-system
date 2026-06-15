@@ -90,3 +90,60 @@ service /api/customers on new http:Listener(9092) {
 
         return customers;
     }
+
+// GET /api/customers/[id] — get single customer
+    resource function get [int id]() returns Customer|http:NotFound|error {
+        log:printInfo("Fetching customer: " + id.toString());
+
+        sql:ParameterizedQuery query = `SELECT id, asgardeo_user_id, email,
+                                        full_name, phone, address
+                                        FROM customers WHERE id = ${id}`;
+
+        Customer|sql:Error result = dbClient->queryRow(query);
+
+        if result is sql:NoRowsError {
+            return http:NOT_FOUND;
+        }
+
+        return result;
+    }
+
+    // GET /api/customers/byuser/[asgardeoId] — get by Asgardeo user ID
+    resource function get byuser/[string asgardeoId]() returns Customer|http:NotFound|error {
+        log:printInfo("Fetching customer by Asgardeo ID: " + asgardeoId);
+
+        sql:ParameterizedQuery query = `SELECT id, asgardeo_user_id, email,
+                                        full_name, phone, address
+                                        FROM customers 
+                                        WHERE asgardeo_user_id = ${asgardeoId}`;
+
+        Customer|sql:Error result = dbClient->queryRow(query);
+
+        if result is sql:NoRowsError {
+            return http:NOT_FOUND;
+        }
+
+        return result;
+    }
+
+    // PUT /api/customers/[id] — update customer profile
+    resource function put [int id](UpdateCustomer updateData) returns Customer|http:NotFound|error {
+        log:printInfo("Updating customer: " + id.toString());
+
+        sql:ParameterizedQuery query = `UPDATE customers SET
+                                        full_name = ${updateData.full_name},
+                                        phone = ${updateData.phone},
+                                        address = ${updateData.address}
+                                        WHERE id = ${id}
+                                        RETURNING id, asgardeo_user_id, email,
+                                        full_name, phone, address`;
+
+        Customer|sql:Error result = dbClient->queryRow(query);
+
+        if result is sql:NoRowsError {
+            return http:NOT_FOUND;
+        }
+
+        return result;
+    }
+}
