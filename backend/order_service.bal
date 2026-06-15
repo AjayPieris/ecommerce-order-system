@@ -5,8 +5,6 @@ import ballerinax/postgresql.driver as _;
 import ballerina/sql;
 import ballerina/time;
 
-// ─── Types ───────────────────────────────────────────────
-
 type OrderItem record {|
     int product_id;
     int quantity;
@@ -60,8 +58,6 @@ type UpdateOrderStatus record {|
     string status;
 |};
 
-// ─── Order Service ───────────────────────────────────────
-
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
@@ -72,13 +68,12 @@ type UpdateOrderStatus record {|
 }
 service /api/orders on new http:Listener(9091) {
 
-    // POST /api/orders — place a new order (MAIN ORCHESTRATION)
+    // place a new order - this is the main flow that handles
+    // stock check, payment, order creation, and shipment
     resource function post .(NewOrder newOrder) returns FullOrderResponse|http:BadRequest|error {
-        log:printInfo("📦 New order received for customer: " + newOrder.customer_id.toString());
+        log:printInfo("New order request from customer " + newOrder.customer_id.toString());
 
-        // ── Step 1: Check stock for all items ──────────────
-        log:printInfo("🔍 Step 1: Checking stock availability...");
-
+        // check if we have enough stock for everything
         foreach OrderItem item in newOrder.items {
             sql:ParameterizedQuery stockQuery = `SELECT id, name, stock_quantity 
                                                   FROM products WHERE id = ${item.product_id}`;
@@ -107,19 +102,17 @@ service /api/orders on new http:Listener(9091) {
                 return badReq;
             }
 
-            log:printInfo("✅ Stock OK for: " + product.name);
+            log:printInfo("Stock OK - " + product.name);
         }
 
-        // ── Step 2: Calculate total amount ─────────────────
-        log:printInfo("💰 Step 2: Calculating total amount...");
+        // calculate total
         decimal totalAmount = 0;
         foreach OrderItem item in newOrder.items {
             totalAmount += item.unit_price * item.quantity;
         }
-        log:printInfo("💰 Total: $" + totalAmount.toString());
+        log:printInfo("Order total: $" + totalAmount.toString());
 
-        // ── Step 3: Mock Payment Processing ────────────────
-        log:printInfo("💳 Step 3: Processing payment...");
+        // process payment (mock for now)
         boolean paymentSuccess = check processMockPayment(totalAmount);
 
         if !paymentSuccess {
@@ -128,11 +121,9 @@ service /api/orders on new http:Listener(9091) {
             };
             return badReq;
         }
-        log:printInfo("✅ Payment confirmed!");
+        log:printInfo("Payment confirmed");
 
-        // ── Step 4: Create order in database ───────────────
-        log:printInfo("📝 Step 4: Creating order record...");
-
+        // insert the order record
         sql:ParameterizedQuery orderQuery = `INSERT INTO orders 
                                              (customer_id, total_amount, status, 
                                               payment_status, shipping_address)
@@ -143,11 +134,9 @@ service /api/orders on new http:Listener(9091) {
                                              created_at::text as created_at`;
 
         OrderResponse createdOrder = check dbClient->queryRow(orderQuery);
-        log:printInfo("✅ Order created with ID: " + createdOrder.id.toString());
+        log:printInfo("Order #" + createdOrder.id.toString() + " created");
 
-        // ── Step 5: Save order items & deduct stock ─────────
-        log:printInfo("📦 Step 5: Saving order items and updating stock...");
-
+        // save each item and deduct stock
         foreach OrderItem item in newOrder.items {
             decimal subtotal = item.unit_price * item.quantity;
 
@@ -157,26 +146,24 @@ service /api/orders on new http:Listener(9091) {
                                                 ${item.quantity}, ${item.unit_price}, ${subtotal})`;
             _ = check dbClient->execute(itemQuery);
 
-            // Deduct stock
+            // deduct from stock
             sql:ParameterizedQuery stockDeductQuery = `UPDATE products 
                                                         SET stock_quantity = stock_quantity - ${item.quantity}
                                                         WHERE id = ${item.product_id}`;
             _ = check dbClient->execute(stockDeductQuery);
 
-            log:printInfo("✅ Stock deducted for product: " + item.product_id.toString());
+            log:printInfo("Deducted stock for product " + item.product_id.toString());
         }
 
-        // ── Step 6: Trigger mock shipment ──────────────────
-        log:printInfo("🚚 Step 6: Triggering shipment...");
+        // trigger shipment
         check triggerMockShipment(createdOrder.id, newOrder.shipping_address);
 
-        // Update order status to PROCESSING
+        // mark as processing now
         sql:ParameterizedQuery updateStatusQuery = `UPDATE orders SET status = 'PROCESSING'
                                                     WHERE id = ${createdOrder.id}`;
         _ = check dbClient->execute(updateStatusQuery);
 
-        // ── Step 7: Log notification ───────────────────────
-        log:printInfo("🔔 Step 7: Logging notification...");
+        // log a notification
         sql:ParameterizedQuery notifQuery = `INSERT INTO notifications 
                                              (order_id, type, message)
                                              VALUES (${createdOrder.id}, 'EMAIL',
@@ -184,8 +171,8 @@ service /api/orders on new http:Listener(9091) {
                                              " confirmed! Total: $" + totalAmount.toString()})`;
         _ = check dbClient->execute(notifQuery);
 
-        // ── Step 8: Return full order response ─────────────
-        log:printInfo("🎉 Order flow complete for Order #" + createdOrder.id.toString());
+        // build and return the full response
+        log:printInfo("Order #" + createdOrder.id.toString() + " flow complete");
 
         OrderItemResponse[] orderItems = check getOrderItems(createdOrder.id);
 
@@ -203,7 +190,7 @@ service /api/orders on new http:Listener(9091) {
         return response;
     }
 
-    // GET /api/orders — get all orders (admin)
+    // get all orders
     resource function get .() returns OrderResponse[]|error {
         log:printInfo("Fetching all orders");
 
@@ -223,9 +210,9 @@ service /api/orders on new http:Listener(9091) {
         return orders;
     }
 
-    // GET /api/orders/[id] — get single order with items
+    // get a single order with its items
     resource function get [int id]() returns FullOrderResponse|http:NotFound|error {
-        log:printInfo("Fetching order: " + id.toString());
+        log:printInfo("Fetching order #" + id.toString());
 
         sql:ParameterizedQuery query = `SELECT id, customer_id, total_amount, status,
                                         payment_status, shipping_address,
@@ -258,9 +245,9 @@ service /api/orders on new http:Listener(9091) {
         return fullOrder;
     }
 
-    // GET /api/orders/customer/[customerId] — get orders by customer
+    // get orders for a specific customer
     resource function get customer/[int customerId]() returns OrderResponse[]|error {
-        log:printInfo("Fetching orders for customer: " + customerId.toString());
+        log:printInfo("Fetching orders for customer " + customerId.toString());
 
         sql:ParameterizedQuery query = `SELECT id, customer_id, total_amount, status,
                                         payment_status, shipping_address,
@@ -279,10 +266,10 @@ service /api/orders on new http:Listener(9091) {
         return orders;
     }
 
-    // PUT /api/orders/[id]/status — update order status (admin)
+    // update order status
     resource function put [int id]/status(UpdateOrderStatus statusUpdate) 
                                           returns OrderResponse|http:NotFound|error {
-        log:printInfo("Updating order status: " + id.toString() + " → " + statusUpdate.status);
+        log:printInfo("Updating status for order #" + id.toString() + " to " + statusUpdate.status);
 
         sql:ParameterizedQuery query = `UPDATE orders SET status = ${statusUpdate.status},
                                         updated_at = CURRENT_TIMESTAMP
@@ -301,25 +288,20 @@ service /api/orders on new http:Listener(9091) {
     }
 }
 
-// ─── Helper Functions ─────────────────────────────────────
-
-// Mock payment processor
+// simulates payment processing - would call stripe/paypal in production
 function processMockPayment(decimal amount) returns boolean|error {
-    log:printInfo("💳 Processing payment of $" + amount.toString());
-    // In real world → call payment gateway (Stripe, PayPal etc.)
-    // For now → always returns true (success)
+    log:printInfo("Processing payment of $" + amount.toString());
+    // TODO: integrate with actual payment gateway
     return true;
 }
 
-// Mock shipment trigger
+// simulates triggering a shipment
 function triggerMockShipment(int orderId, string address) returns error? {
-    log:printInfo("🚚 Triggering shipment for Order #" + orderId.toString());
-    log:printInfo("📍 Shipping to: " + address);
-    // In real world → call shipping API (FedEx, DHL etc.)
-    // For now → just logs
+    log:printInfo("Shipment triggered for order #" + orderId.toString() + " to " + address);
+    // TODO: hook up to shipping provider API
 }
 
-// Get order items with product names
+// helper to fetch order items joined with product names
 function getOrderItems(int orderId) returns OrderItemResponse[]|error {
     sql:ParameterizedQuery query = `SELECT oi.id, oi.order_id, oi.product_id,
                                     p.name as product_name, oi.quantity,
