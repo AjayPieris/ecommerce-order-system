@@ -300,6 +300,42 @@ service /api/orders on new http:Listener(9091) {
         return result;
     }
 }
+// ─── Helper Functions ─────────────────────────────────────
 
+// Mock payment processor
+function processMockPayment(decimal amount) returns boolean|error {
+    log:printInfo("💳 Processing payment of $" + amount.toString());
+    // In real world → call payment gateway (Stripe, PayPal etc.)
+    // For now → always returns true (success)
+    return true;
+}
+
+// Mock shipment trigger
+function triggerMockShipment(int orderId, string address) returns error? {
+    log:printInfo("🚚 Triggering shipment for Order #" + orderId.toString());
+    log:printInfo("📍 Shipping to: " + address);
+    // In real world → call shipping API (FedEx, DHL etc.)
+    // For now → just logs
+}
+
+// Get order items with product names
+function getOrderItems(int orderId) returns OrderItemResponse[]|error {
+    sql:ParameterizedQuery query = `SELECT oi.id, oi.order_id, oi.product_id,
+                                    p.name as product_name, oi.quantity,
+                                    oi.unit_price, oi.subtotal
+                                    FROM order_items oi
+                                    JOIN products p ON oi.product_id = p.id
+                                    WHERE oi.order_id = ${orderId}`;
+
+    stream<OrderItemResponse, sql:Error?> itemStream = dbClient->query(query);
+    OrderItemResponse[] items = [];
+
+    check from OrderItemResponse item in itemStream
+        do {
+            items.push(item);
+        };
+
+    return items;
+}
 
  
