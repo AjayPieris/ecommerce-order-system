@@ -1,10 +1,6 @@
 import ballerina/http;
 import ballerina/log;
-import ballerinax/postgresql;
-import ballerinax/postgresql.driver as _;
 import ballerina/sql;
-
-// ─── Types ───────────────────────────────────────────────
 
 type Customer record {|
     int id;
@@ -29,8 +25,6 @@ type UpdateCustomer record {|
     string address;
 |};
 
-// ─── Customer Service ─────────────────────────────────────
-
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
@@ -41,11 +35,11 @@ type UpdateCustomer record {|
 }
 service /api/customers on new http:Listener(9092) {
 
-    // POST /api/customers — register customer (called on first login)
+    // register a new customer (called on first login)
     resource function post .(NewCustomer newCustomer) returns Customer|http:Conflict|error {
         log:printInfo("Registering customer: " + newCustomer.email);
 
-        // Check if already exists
+        // check if this user already exists
         sql:ParameterizedQuery checkQuery = `SELECT id, asgardeo_user_id, email, 
                                              full_name, phone, address
                                              FROM customers 
@@ -54,11 +48,11 @@ service /api/customers on new http:Listener(9092) {
         Customer|sql:Error existing = dbClient->queryRow(checkQuery);
 
         if existing is Customer {
-            // Already registered → return existing
+            // already registered, just return what we have
             return existing;
         }
 
-        // Create new customer
+        // insert new customer
         sql:ParameterizedQuery insertQuery = `INSERT INTO customers
                                               (asgardeo_user_id, email, full_name, phone, address)
                                               VALUES (${newCustomer.asgardeo_user_id},
@@ -68,11 +62,11 @@ service /api/customers on new http:Listener(9092) {
                                               full_name, phone, address`;
 
         Customer result = check dbClient->queryRow(insertQuery);
-        log:printInfo("✅ Customer created: " + result.id.toString());
+        log:printInfo("Customer created with id " + result.id.toString());
         return result;
     }
 
-    // GET /api/customers — get all customers (admin only)
+    // get all customers
     resource function get .() returns Customer[]|error {
         log:printInfo("Fetching all customers");
 
@@ -91,9 +85,9 @@ service /api/customers on new http:Listener(9092) {
         return customers;
     }
 
-// GET /api/customers/[id] — get single customer
+    // get single customer by id
     resource function get [int id]() returns Customer|http:NotFound|error {
-        log:printInfo("Fetching customer: " + id.toString());
+        log:printInfo("Fetching customer #" + id.toString());
 
         sql:ParameterizedQuery query = `SELECT id, asgardeo_user_id, email,
                                         full_name, phone, address
@@ -108,9 +102,9 @@ service /api/customers on new http:Listener(9092) {
         return result;
     }
 
-    // GET /api/customers/byuser/[asgardeoId] — get by Asgardeo user ID
+    // lookup customer by their asgardeo user id
     resource function get byuser/[string asgardeoId]() returns Customer|http:NotFound|error {
-        log:printInfo("Fetching customer by Asgardeo ID: " + asgardeoId);
+        log:printInfo("Looking up customer by asgardeo id: " + asgardeoId);
 
         sql:ParameterizedQuery query = `SELECT id, asgardeo_user_id, email,
                                         full_name, phone, address
@@ -126,9 +120,9 @@ service /api/customers on new http:Listener(9092) {
         return result;
     }
 
-    // PUT /api/customers/[id] — update customer profile
+    // update customer profile info
     resource function put [int id](UpdateCustomer updateData) returns Customer|http:NotFound|error {
-        log:printInfo("Updating customer: " + id.toString());
+        log:printInfo("Updating customer #" + id.toString());
 
         sql:ParameterizedQuery query = `UPDATE customers SET
                                         full_name = ${updateData.full_name},
