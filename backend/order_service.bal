@@ -74,10 +74,10 @@ service /api/orders on new http:Listener(9091) {
 
     // POST /api/orders — place a new order (MAIN ORCHESTRATION)
     resource function post .(NewOrder newOrder) returns FullOrderResponse|http:BadRequest|error {
-        log:printInfo("New order received for customer: " + newOrder.customer_id.toString());
+        log:printInfo("📦 New order received for customer: " + newOrder.customer_id.toString());
 
         // ── Step 1: Check stock for all items ──────────────
-        log:printInfo("Step 1: Checking stock availability...");
+        log:printInfo("🔍 Step 1: Checking stock availability...");
 
         foreach OrderItem item in newOrder.items {
             sql:ParameterizedQuery stockQuery = `SELECT id, name, stock_quantity 
@@ -107,7 +107,26 @@ service /api/orders on new http:Listener(9091) {
                 return badReq;
             }
 
-            log:printInfo("Stock OK for: " + product.name);
+            log:printInfo("✅ Stock OK for: " + product.name);
         }
-    }
-}
+
+        // ── Step 2: Calculate total amount ─────────────────
+        log:printInfo("💰 Step 2: Calculating total amount...");
+        decimal totalAmount = 0;
+        foreach OrderItem item in newOrder.items {
+            totalAmount += item.unit_price * item.quantity;
+        }
+        log:printInfo("💰 Total: $" + totalAmount.toString());
+
+        // ── Step 3: Mock Payment Processing ────────────────
+        log:printInfo("Step 3: Processing payment...");
+        boolean paymentSuccess = check processMockPayment(totalAmount);
+
+        if !paymentSuccess {
+            http:BadRequest badReq = {
+                body: {message: "Payment failed. Please try again."}
+            };
+            return badReq;
+        }
+        log:printInfo("Payment confirmed!");
+ 
