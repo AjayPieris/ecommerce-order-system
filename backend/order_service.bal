@@ -1,9 +1,6 @@
 import ballerina/http;
 import ballerina/log;
-import ballerinax/postgresql;
-import ballerinax/postgresql.driver as _;
 import ballerina/sql;
-import ballerina/time;
 
 type OrderItem record {|
     int product_id;
