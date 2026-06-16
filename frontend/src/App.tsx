@@ -10,8 +10,17 @@ import { AppAuthProvider, useAppAuth } from "./context/AuthContext";
 // import AdminDashboard from "./pages/admin/Dashboard";
 // import AdminInventory from "./pages/admin/Inventory";
 // import AdminOrders from "./pages/admin/Orders";
-// import Navbar from "./components/Navbar";
-import Callback from "./pages";
+import Navbar from "./components/Navbar";
+import Callback from "./pages/Callback.jsx";
+
+// Dummy components to prevent ReferenceError
+const Home = () => <div>Home Page</div>;
+const Cart = () => <div>Cart Page</div>;
+const OrderStatus = () => <div>Order Status Page</div>;
+const AdminDashboard = () => <div>Admin Dashboard</div>;
+const AdminInventory = () => <div>Admin Inventory</div>;
+const AdminOrders = () => <div>Admin Orders</div>;
+
 
 // Protected Route
 const ProtectedRoute = ({ children, requiredRole }) => {
