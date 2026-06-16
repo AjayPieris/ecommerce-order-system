@@ -4,14 +4,14 @@ import { useAuthContext } from "@asgardeo/auth-react";
 import { AppAuthProvider, useAppAuth } from "./context/AuthContext";
 
 // Pages
-import Home from "./pages/Home";
-import Cart from "./pages/Cart";
-import OrderStatus from "./pages/OrderStatus";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminInventory from "./pages/admin/Inventory";
-import AdminOrders from "./pages/admin/Orders";
-import Navbar from "./components/Navbar";
-import Callback from "./pages/Callback";
+// import Home from "./pages/Home";
+// import Cart from "./pages/Cart";
+// import OrderStatus from "./pages/OrderStatus";
+// import AdminDashboard from "./pages/admin/Dashboard";
+// import AdminInventory from "./pages/admin/Inventory";
+// import AdminOrders from "./pages/admin/Orders";
+// import Navbar from "./components/Navbar";
+import Callback from "./pages";
 
 // Protected Route
 const ProtectedRoute = ({ children, requiredRole }) => {
