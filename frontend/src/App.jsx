@@ -41,7 +41,7 @@ const AppContent = () => {
         <Route path="/orders" element={
           <ProtectedRoute><OrderStatus /></ProtectedRoute>
         } />
-        <Route path="/admin" element={
+        {/* <Route path="/admin" element={
           <ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>
         } />
         <Route path="/admin/inventory" element={
@@ -49,7 +49,7 @@ const AppContent = () => {
         } />
         <Route path="/admin/orders" element={
           <ProtectedRoute requiredRole="admin"><AdminOrders /></ProtectedRoute>
-        } />
+        } /> */}
       </Routes>
     </BrowserRouter>
   );
