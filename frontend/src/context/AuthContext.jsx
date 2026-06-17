@@ -33,13 +33,15 @@ export const AppAuthProvider = ({ children }) => {
 
       // Extract role from token
       // Asgardeo puts roles in different claims
-      const roles = idToken?.roles ||
-                    idToken?.groups ||
-                    idToken?.[`${import.meta.env.VITE_ASGARDEO_BASE_URL}/roles`] || [];
+      const rolesClaim = idToken?.roles ||
+                         idToken?.groups ||
+                         idToken?.[`${import.meta.env.VITE_ASGARDEO_BASE_URL}/roles`];
 
-      const isAdmin = Array.isArray(roles)
-        ? roles.some(r => r.toLowerCase().includes("admin"))
-        : false;
+      const rolesArray = Array.isArray(rolesClaim) 
+        ? rolesClaim 
+        : (typeof rolesClaim === 'string' ? [rolesClaim] : []);
+
+      const isAdmin = rolesArray.some(r => r.toLowerCase().includes("admin"));
 
       setUserRole(isAdmin ? "admin" : "customer");
 

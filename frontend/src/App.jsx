@@ -6,9 +6,9 @@ import { CartProvider } from "./context/CartContext";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import OrderStatus from "./pages/OrderStatus";
-// import AdminDashboard from "./pages/admin/Dashboard";
-// import AdminInventory from "./pages/admin/Inventory";
-// import AdminOrders from "./pages/admin/Orders";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminInventory from "./pages/admin/Inventory";
+import AdminOrders from "./pages/admin/Orders";
 import Navbar from "./components/Navbar";
 import Callback from "./pages/Callback";
 
@@ -41,7 +41,7 @@ const AppContent = () => {
         <Route path="/orders" element={
           <ProtectedRoute><OrderStatus /></ProtectedRoute>
         } />
-        {/* <Route path="/admin" element={
+        <Route path="/admin" element={
           <ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>
         } />
         <Route path="/admin/inventory" element={
@@ -49,7 +49,7 @@ const AppContent = () => {
         } />
         <Route path="/admin/orders" element={
           <ProtectedRoute requiredRole="admin"><AdminOrders /></ProtectedRoute>
-        } /> */}
+        } />
       </Routes>
     </BrowserRouter>
   );

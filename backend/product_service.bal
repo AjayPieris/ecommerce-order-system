@@ -3,6 +3,7 @@ import ballerina/log;
 import ballerinax/postgresql;
 import ballerinax/postgresql.driver as _;
 import ballerina/sql;
+import ballerina/jwt;
 
 // product record types
 
@@ -113,9 +114,16 @@ service /api/products on new http:Listener(9090) {
         return products;
     }
 
-    // create new product
-    resource function post .(NewProduct newProduct) returns Product|error {
-        log:printInfo("Creating product: " + newProduct.name);
+    // create new product (admin only)
+    resource function post .(http:Request req, NewProduct newProduct) returns Product|http:Unauthorized|http:Forbidden|error {
+        jwt:Payload|http:Unauthorized authResult = validateToken(req);
+        if authResult is http:Unauthorized {
+            return authResult;
+        } else if !isAdmin(authResult) {
+            return http:FORBIDDEN;
+        }
+
+        log:printInfo("Creating new product: " + newProduct.name);
 
         sql:ParameterizedQuery query = `INSERT INTO products 
                                         (name, description, price, stock_quantity, image_url, category)

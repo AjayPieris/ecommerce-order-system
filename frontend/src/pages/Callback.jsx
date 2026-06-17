@@ -3,14 +3,14 @@ import { useAuthContext } from "@asgardeo/auth-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Callback() {
-  const { handleSignIn } = useAuthContext();
+  const { state } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    handleSignIn().then(() => {
+    if (state.isAuthenticated) {
       navigate("/");
-    }).catch(console.error);
-  }, []);
+    }
+  }, [state.isAuthenticated, navigate]);
 
   return (
     <div className="flex items-center justify-center h-screen">
