@@ -13,6 +13,9 @@ export const AppAuthProvider = ({ children }) => {
     getDecodedIDToken,
   } = useAuthContext();
 
+  // Sign up by triggering Asgardeo registration page
+  const signUp = () => signIn({ prompt: "create" });
+
   const [userRole, setUserRole] = useState(null);
   const [customerId, setCustomerId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,21 +34,31 @@ export const AppAuthProvider = ({ children }) => {
       const idToken = await getDecodedIDToken();
       console.log("ID Token:", idToken);
 
-      // Extract role from token
-      // Asgardeo puts roles in different claims
-      const rolesClaim = idToken?.roles ||
-                         idToken?.groups ||
-                         idToken?.[`${import.meta.env.VITE_ASGARDEO_BASE_URL}/roles`];
+      // Log full token to debug claim structure
+      console.log("Full ID Token claims:", JSON.stringify(idToken, null, 2));
 
-      const rolesArray = Array.isArray(rolesClaim) 
-        ? rolesClaim 
-        : (typeof rolesClaim === 'string' ? [rolesClaim] : []);
+      // Asgardeo returns roles/groups under various claim URIs depending on config
+      const rolesClaim =
+        idToken?.roles ||
+        idToken?.groups ||
+        idToken?.application_roles ||
+        idToken?.["http://wso2.org/claims/role"] ||
+        idToken?.["http://wso2.org/claims/roles"] ||
+        idToken?.["http://wso2.org/claims/groups"] ||
+        idToken?.[`${import.meta.env.VITE_ASGARDEO_BASE_URL}/roles`];
 
-      const isAdmin = rolesArray.some(r => r.toLowerCase().includes("admin"));
+      const rolesArray = Array.isArray(rolesClaim)
+        ? rolesClaim
+        : typeof rolesClaim === 'string'
+        ? rolesClaim.split(',')
+        : [];
+
+      console.log("Detected roles:", rolesArray);
+      const isAdmin = rolesArray.some(r => r.trim().toLowerCase().includes("admin"));
 
       setUserRole(isAdmin ? "admin" : "customer");
 
-      // Register customer in our backend (if not admin)
+      // Only register non-admin users as customers
       if (!isAdmin) {
         await registerCustomer(idToken);
       }
@@ -94,6 +107,7 @@ export const AppAuthProvider = ({ children }) => {
         userRole,
         customerId,
         signIn,
+        signUp,
         signOut,
         getAuthHeader,
       }}

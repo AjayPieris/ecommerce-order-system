@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { useAppAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { ShoppingCart, Package, LayoutDashboard, LogIn, LogOut } from "lucide-react";
+import { ShoppingCart, Package, LayoutDashboard, LogIn, LogOut, UserPlus } from "lucide-react";
 
 export default function Navbar() {
-  const { isAuthenticated, userRole, signIn, signOut } = useAppAuth();
+  const { isAuthenticated, userRole, signIn, signUp, signOut } = useAppAuth();
   const { totalItems } = useCart();
 
   return (
@@ -64,14 +64,22 @@ export default function Navbar() {
             </button>
           </div>
         ) : (
-          <button
-            onClick={() => signIn()}
-            className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition"
-          >
-            <LogIn size={16} /> Sign In
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => signIn()}
+              className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition"
+            >
+              <LogIn size={16} /> Sign In
+            </button>
+            <button
+              onClick={() => signUp()}
+              className="flex items-center gap-2 border-2 border-orange-500 text-orange-500 px-4 py-2 rounded-lg hover:bg-orange-50 transition"
+            >
+              <UserPlus size={16} /> Sign Up
+            </button>
+          </div>
         )}
       </div>
     </nav>
   );
-}
+}
