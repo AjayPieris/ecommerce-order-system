@@ -13,8 +13,10 @@ export const AppAuthProvider = ({ children }) => {
     getDecodedIDToken,
   } = useAuthContext();
 
-  // Sign up by triggering Asgardeo registration page
-  const signUp = () => signIn({ prompt: "create" });
+  // Sign up: calls signIn() which redirects to Asgardeo login page.
+  // When self-registration is enabled in Asgardeo console, the login page
+  // automatically shows a "Create an account" / "Register" link at the bottom.
+  const signUp = () => signIn();
 
   const [userRole, setUserRole] = useState(null);
   const [customerId, setCustomerId] = useState(null);
