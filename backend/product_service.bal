@@ -4,6 +4,9 @@ import ballerinax/postgresql;
 import ballerinax/postgresql.driver as _;
 import ballerina/sql;
 import ballerina/jwt;
+import ballerina/time;
+import ballerina/crypto;
+import ballerina/mime;
 
 // product record types
 
@@ -22,7 +25,8 @@ type NewProduct record {|
     string description;
     decimal price;
     int stock_quantity;
-    string image_url;
+    string image_url?;
+    string image_data?;
     string category;
 |};
 
@@ -36,6 +40,58 @@ configurable int dbPort = ?;
 configurable string dbName = ?;
 configurable string dbUser = ?;
 configurable string dbPassword = ?;
+
+// cloudinary config
+configurable string CLOUDINARY_CLOUD_NAME = ?;
+configurable string CLOUDINARY_API_KEY = ?;
+configurable string CLOUDINARY_API_SECRET = ?;
+
+function uploadToCloudinary(string base64DataUri) returns string|error {
+    http:Client cloudinaryClient = check new ("https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD_NAME);
+
+    int timestamp = time:utcNow()[0];
+    string stringToSign = "timestamp=" + timestamp.toString() + CLOUDINARY_API_SECRET;
+    byte[] hash = crypto:hashSha1(stringToSign.toBytes());
+    string signature = hash.toBase16();
+
+    mime:Entity filePart = new;
+    mime:ContentDisposition fileDisp = new;
+    fileDisp.name = "file";
+    filePart.setContentDisposition(fileDisp);
+    filePart.setText(base64DataUri);
+
+    mime:Entity apiKeyPart = new;
+    mime:ContentDisposition apiDisp = new;
+    apiDisp.name = "api_key";
+    apiKeyPart.setContentDisposition(apiDisp);
+    apiKeyPart.setText(CLOUDINARY_API_KEY);
+
+    mime:Entity timestampPart = new;
+    mime:ContentDisposition timeDisp = new;
+    timeDisp.name = "timestamp";
+    timestampPart.setContentDisposition(timeDisp);
+    timestampPart.setText(timestamp.toString());
+
+    mime:Entity signaturePart = new;
+    mime:ContentDisposition sigDisp = new;
+    sigDisp.name = "signature";
+    signaturePart.setContentDisposition(sigDisp);
+    signaturePart.setText(signature);
+
+    http:Request req = new;
+    req.setBodyParts([filePart, apiKeyPart, timestampPart, signaturePart]);
+
+    http:Response resp = check cloudinaryClient->post("/image/upload", req);
+    json payload = check resp.getJsonPayload();
+
+    if resp.statusCode != 200 {
+        return error("Cloudinary upload failed: " + payload.toString());
+    }
+
+    string secureUrl = check payload.secure_url;
+    return secureUrl;
+}
+
 
 final postgresql:Client dbClient = check new (
     host = dbHost,
@@ -125,11 +181,18 @@ service /api/products on new http:Listener(9090) {
 
         log:printInfo("Creating new product: " + newProduct.name);
 
+        string finalImageUrl = "";
+        if newProduct.image_data is string && (<string>newProduct.image_data).startsWith("data:image") {
+            finalImageUrl = check uploadToCloudinary(<string>newProduct.image_data);
+        } else if newProduct.image_url is string {
+            finalImageUrl = <string>newProduct.image_url;
+        }
+
         sql:ParameterizedQuery query = `INSERT INTO products 
                                         (name, description, price, stock_quantity, image_url, category)
                                         VALUES (${newProduct.name}, ${newProduct.description},
                                         ${newProduct.price}, ${newProduct.stock_quantity},
-                                        ${newProduct.image_url}, ${newProduct.category})
+                                        ${finalImageUrl}, ${newProduct.category})
                                         RETURNING id, name, description, price, 
                                         stock_quantity, image_url, category`;
 
@@ -141,12 +204,19 @@ service /api/products on new http:Listener(9090) {
     resource function put [int id](NewProduct updatedProduct) returns Product|http:NotFound|error {
         log:printInfo("Updating product #" + id.toString());
 
+        string finalImageUrl = "";
+        if updatedProduct.image_data is string && (<string>updatedProduct.image_data).startsWith("data:image") {
+            finalImageUrl = check uploadToCloudinary(<string>updatedProduct.image_data);
+        } else if updatedProduct.image_url is string {
+            finalImageUrl = <string>updatedProduct.image_url;
+        }
+
         sql:ParameterizedQuery query = `UPDATE products SET
                                         name = ${updatedProduct.name},
                                         description = ${updatedProduct.description},
                                         price = ${updatedProduct.price},
                                         stock_quantity = ${updatedProduct.stock_quantity},
-                                        image_url = ${updatedProduct.image_url},
+                                        image_url = ${finalImageUrl},
                                         category = ${updatedProduct.category}
                                         WHERE id = ${id}
                                         RETURNING id, name, description, price,

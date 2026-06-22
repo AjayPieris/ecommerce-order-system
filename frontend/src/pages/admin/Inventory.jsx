@@ -9,6 +9,7 @@ const emptyForm = {
   price: "",
   stock_quantity: "",
   image_url: "",
+  image_data: "",
   category: "",
 };
 
@@ -72,6 +73,7 @@ export default function AdminInventory() {
       price: product.price.toString(),
       stock_quantity: product.stock_quantity.toString(),
       image_url: product.image_url,
+      image_data: "",
       category: product.category,
     });
     setShowForm(true);
@@ -224,7 +226,6 @@ export default function AdminInventory() {
                 { label: "Price ($)", field: "price", type: "number" },
                 { label: "Stock Quantity", field: "stock_quantity", type: "number" },
                 { label: "Category", field: "category", type: "text" },
-                { label: "Image URL", field: "image_url", type: "text" },
               ].map(({ label, field, type }) => (
                 <div key={field}>
                   <label className="block text-sm font-medium text-gray-600 mb-1">{label}</label>
@@ -238,6 +239,25 @@ export default function AdminInventory() {
               ))}
 
               <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Product Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={e => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setForm(prev => ({ ...prev, image_data: reader.result }));
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
+                />
+              </div>
+
+              <div>
                 <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
                 <textarea
                   value={form.description}
@@ -247,9 +267,9 @@ export default function AdminInventory() {
                 />
               </div>
 
-              {form.image_url && (
+              {(form.image_data || form.image_url) && (
                 <img
-                  src={form.image_url}
+                  src={form.image_data || form.image_url}
                   alt="Preview"
                   className="w-full h-32 object-cover rounded-xl"
                 />

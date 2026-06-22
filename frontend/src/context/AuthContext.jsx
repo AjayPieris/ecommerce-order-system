@@ -11,6 +11,7 @@ export const AppAuthProvider = ({ children }) => {
     signOut,
     getAccessToken,
     getDecodedIDToken,
+    getBasicUserInfo,
   } = useAuthContext();
 
   // Sign up: calls signIn() which redirects to Asgardeo login page.
@@ -34,7 +35,10 @@ export const AppAuthProvider = ({ children }) => {
     try {
       // Get decoded token to extract role
       const idToken = await getDecodedIDToken();
+      const basicUserInfo = await getBasicUserInfo();
+      
       console.log("ID Token:", idToken);
+      console.log("Basic User Info:", basicUserInfo);
 
       // Log full token to debug claim structure
       console.log("Full ID Token claims:", JSON.stringify(idToken, null, 2));
@@ -47,10 +51,16 @@ export const AppAuthProvider = ({ children }) => {
         idToken?.["http://wso2.org/claims/role"] ||
         idToken?.["http://wso2.org/claims/roles"] ||
         idToken?.["http://wso2.org/claims/groups"] ||
-        idToken?.[`${import.meta.env.VITE_ASGARDEO_BASE_URL}/roles`];
+        idToken?.[`${import.meta.env.VITE_ASGARDEO_BASE_URL}/roles`] ||
+        basicUserInfo?.roles ||
+        basicUserInfo?.groups ||
+        basicUserInfo?.application_roles ||
+        basicUserInfo?.["http://wso2.org/claims/role"] ||
+        basicUserInfo?.["http://wso2.org/claims/roles"] ||
+        basicUserInfo?.["http://wso2.org/claims/groups"];
 
       const rolesArray = Array.isArray(rolesClaim)
-        ? rolesClaim
+        ? rolesClaim.map(r => typeof r === 'object' ? (r.display || r.name || r.value || JSON.stringify(r)) : String(r))
         : typeof rolesClaim === 'string'
         ? rolesClaim.split(',')
         : [];
