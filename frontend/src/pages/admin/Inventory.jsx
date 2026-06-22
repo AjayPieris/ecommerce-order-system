@@ -107,9 +107,8 @@ export default function AdminInventory() {
   );
 
   return (
-    <div className="bg-gray-50/30 min-h-screen pb-16">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-black text-gray-900">Inventory Management</h1>
             <p className="text-gray-500 text-sm mt-1">{products.length} products total</p>
@@ -335,7 +334,6 @@ export default function AdminInventory() {
           </div>
         </div>
       )}
-      </div>
     </div>
   );
 }

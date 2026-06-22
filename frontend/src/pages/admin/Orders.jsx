@@ -96,10 +96,8 @@ export default function AdminOrders() {
   );
 
   return (
-    <div className="bg-gray-50/30 min-h-screen pb-16">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-        <div className="flex justify-between items-center mb-8">
+    <div className="space-y-8">
+      <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-black text-gray-900">Order Management</h1>
             <p className="text-gray-500 mt-1">{orders.length} total orders</p>
@@ -269,7 +267,6 @@ export default function AdminOrders() {
           </div>
         </div>
       )}
-      </div>
     </div>
   );
 }

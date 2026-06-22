@@ -88,40 +88,13 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="bg-gray-50/30 min-h-screen pb-16">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-black text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-500 mt-1">Welcome back! Here's what's happening today.</p>
-        </div>
+    <div className="space-y-8">
+      <div className="mb-2">
+        <h1 className="text-3xl font-black text-gray-900">Dashboard Overview</h1>
+        <p className="text-gray-500 mt-1">Welcome back! Here's what's happening today.</p>
+      </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        
-        {/* Left Sidebar: Quick Actions */}
-        <div className="lg:w-64 shrink-0">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Quick Actions</h2>
-          <div className="flex flex-col gap-4">
-            {[
-              { label: "Manage Inventory", to: "/admin/inventory" },
-              { label: "Manage Orders", to: "/admin/orders" },
-              { label: "View Products", to: "/" },
-              { label: "Notifications", to: "/admin/orders" },
-            ].map((action, i) => (
-              <Link
-                key={i}
-                to={action.to}
-                className="bg-gray-900 text-white rounded-2xl p-5 text-center font-bold hover:bg-gray-800 transition shadow-md hover:shadow-lg hover:-translate-y-0.5"
-              >
-                {action.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="flex-1 space-y-8">
-          
-          {/* Stats Cards */}
+      {/* Stats Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4">
             {[
               { label: "Products", value: stats.totalProducts, icon: <Package size={20} />, color: "text-gray-900", bg: "bg-gray-100" },
@@ -195,11 +168,9 @@ export default function AdminDashboard() {
                 ))
               )}
             </div>
-          </div>
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 }

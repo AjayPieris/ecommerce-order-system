@@ -9,6 +9,7 @@ import OrderStatus from "./pages/OrderStatus";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminInventory from "./pages/admin/Inventory";
 import AdminOrders from "./pages/admin/Orders";
+import AdminLayout from "./components/AdminLayout";
 import Navbar from "./components/Navbar";
 import Callback from "./pages/Callback";
 
@@ -45,15 +46,11 @@ const AppContent = () => {
             <Route path="/orders" element={
               <ProtectedRoute><OrderStatus /></ProtectedRoute>
             } />
-            <Route path="/admin" element={
-              <ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>
-            } />
-            <Route path="/admin/inventory" element={
-              <ProtectedRoute requiredRole="admin"><AdminInventory /></ProtectedRoute>
-            } />
-            <Route path="/admin/orders" element={
-              <ProtectedRoute requiredRole="admin"><AdminOrders /></ProtectedRoute>
-            } />
+            <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AdminLayout /></ProtectedRoute>}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="inventory" element={<AdminInventory />} />
+              <Route path="orders" element={<AdminOrders />} />
+            </Route>
           </Routes>
         </main>
         <Footer />
