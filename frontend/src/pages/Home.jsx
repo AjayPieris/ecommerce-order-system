@@ -70,7 +70,7 @@ export default function Home() {
             )}
           </div>
           <div className="absolute right-0 top-0 bottom-0 w-full md:w-2/3 flex items-center justify-end overflow-hidden opacity-90">
-            <img src="/hero_banner.png" alt="Fashion Sale" className="h-[120%] w-full object-cover object-top mix-blend-multiply opacity-80 pointer-events-none" />
+            <img src="/hero_banner.png" alt="Fashion Sale" className="h-full w-full object-contain object-right mix-blend-multiply opacity-90 pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-r from-gray-100/90 via-gray-100/30 to-transparent md:bg-gradient-to-r md:from-gray-100 md:via-transparent md:to-transparent"></div>
           </div>
         </div>

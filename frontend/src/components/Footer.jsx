@@ -1,42 +1,10 @@
 import React from "react";
-import { Package, Globe, MessageCircle, Users, Camera, Mail, MapPin, Phone, CreditCard, Banknote, ShieldCheck } from "lucide-react";
+import { Package, Globe, MessageCircle, Users, Camera, Mail, MapPin, Phone, CreditCard, Banknote, ShieldCheck, Apple, Play } from "lucide-react";
 
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300 mt-auto border-t border-gray-800">
-      
-      {/* Newsletter / Benefits Strip */}
-      <div className="bg-gray-800/50 border-b border-gray-800">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="flex-1 w-full flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-white"><ShieldCheck size={24} /></div>
-              <div>
-                <h4 className="text-white font-bold">100% Secure</h4>
-                <p className="text-sm text-gray-400">Safe payments</p>
-              </div>
-            </div>
-            <div className="hidden sm:block w-px h-8 bg-gray-700"></div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-white"><Globe size={24} /></div>
-              <div>
-                <h4 className="text-white font-bold">Global Shipping</h4>
-                <p className="text-sm text-gray-400">To 100+ countries</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex-1 w-full max-w-md">
-            <h4 className="text-white font-bold mb-2">Subscribe to our Newsletter</h4>
-            <div className="flex bg-gray-800 rounded-full p-1 border border-gray-700 focus-within:border-gray-500 transition">
-              <input type="email" placeholder="Enter your email" className="w-full bg-transparent border-none px-4 text-sm focus:outline-none text-white" />
-              <button className="bg-white text-gray-900 px-6 py-2 rounded-full text-sm font-bold hover:bg-gray-100 transition">Subscribe</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Footer Links */}
+  
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 lg:gap-8">
           
@@ -55,10 +23,18 @@ export default function Footer() {
             </div>
             
             <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center cursor-pointer hover:bg-white hover:text-gray-900 transition-colors"><Globe size={18} /></div>
-              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center cursor-pointer hover:bg-white hover:text-gray-900 transition-colors"><MessageCircle size={18} /></div>
-              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center cursor-pointer hover:bg-white hover:text-gray-900 transition-colors"><Users size={18} /></div>
-              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center cursor-pointer hover:bg-white hover:text-gray-900 transition-colors"><Camera size={18} /></div>
+              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center cursor-pointer hover:bg-white hover:text-gray-900 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center cursor-pointer hover:bg-white hover:text-gray-900 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center cursor-pointer hover:bg-white hover:text-gray-900 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center cursor-pointer hover:bg-white hover:text-gray-900 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+              </div>
             </div>
           </div>
 
@@ -98,14 +74,8 @@ export default function Footer() {
             <h3 className="text-white font-bold text-lg mb-6">Download App</h3>
             <div className="flex flex-col gap-3">
               <button className="flex items-center gap-3 bg-gray-800 px-4 py-2.5 rounded-xl hover:bg-gray-700 transition w-full">
-                <Globe size={24} className="text-white" />
-                <div className="text-left">
-                  <p className="text-[10px] text-gray-400 leading-tight">Download on the</p>
-                  <p className="text-sm font-bold text-white leading-tight">App Store</p>
-                </div>
-              </button>
-              <button className="flex items-center gap-3 bg-gray-800 px-4 py-2.5 rounded-xl hover:bg-gray-700 transition w-full">
-                <Package size={24} className="text-white" />
+                
+                <Play size={24} className="text-white" fill="currentColor" />
                 <div className="text-left">
                   <p className="text-[10px] text-gray-400 leading-tight">GET IT ON</p>
                   <p className="text-sm font-bold text-white leading-tight">Google Play</p>
