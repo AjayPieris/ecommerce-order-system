@@ -69,8 +69,9 @@ export default function Home() {
               </button>
             )}
           </div>
-          <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-gray-300/50 to-transparent flex items-center justify-center opacity-40">
-            <div className="w-64 h-64 bg-gray-400 rounded-full blur-3xl"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-full md:w-2/3 flex items-center justify-end overflow-hidden opacity-90">
+            <img src="/hero_banner.png" alt="Fashion Sale" className="h-[120%] w-full object-cover object-top mix-blend-multiply opacity-80 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-100/90 via-gray-100/30 to-transparent md:bg-gradient-to-r md:from-gray-100 md:via-transparent md:to-transparent"></div>
           </div>
         </div>
 
