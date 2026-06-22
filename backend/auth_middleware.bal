@@ -48,16 +48,28 @@ public function isAdmin(jwt:Payload|http:Unauthorized authResult) returns boolea
     if authResult is http:Unauthorized {
         return false;
     }
-    anydata roles = authResult["roles"];
-    if roles is string[] {
-        foreach string role in roles {
-            if role.toLowerAscii() == "admin" {
+
+    // Check multiple possible claim URIs that Asgardeo might use
+    string[] claimKeys = ["roles", "groups", "application_roles", "http://wso2.org/claims/role", "http://wso2.org/claims/groups"];
+    
+    foreach string key in claimKeys {
+        any|error claimValue = authResult[key];
+        if claimValue is string[] {
+            foreach string role in claimValue {
+                if role.toLowerAscii() == "admin" {
+                    return true;
+                }
+            }
+        } else if claimValue is anydata[] {
+            foreach anydata role in claimValue {
+                if role is string && role.toLowerAscii() == "admin" {
+                    return true;
+                }
+            }
+        } else if claimValue is string {
+            if claimValue.toLowerAscii() == "admin" {
                 return true;
             }
-        }
-    } else if roles is string {
-        if roles.toLowerAscii() == "admin" {
-            return true;
         }
     }
     return false;

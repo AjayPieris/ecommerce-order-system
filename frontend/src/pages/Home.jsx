@@ -2,15 +2,14 @@ import { useEffect, useState } from "react";
 import { useAppAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { productAPI } from "../services/api";
-import { ShoppingCart, Star, Package } from "lucide-react";
+import { ShoppingCart, Star, Heart, Clock, ChevronRight, ChevronLeft, LayoutGrid, Monitor, Footprints, Utensils, ShoppingBag } from "lucide-react";
 
 export default function Home() {
   const { isAuthenticated, userRole, signIn } = useAppAuth();
-  const { addToCart, cartItems } = useCart();
+  const { addToCart } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [addedMap, setAddedMap] = useState({});
 
   useEffect(() => {
     fetchProducts();
@@ -27,131 +26,175 @@ export default function Home() {
     }
   };
 
-  const categories = ["All", ...new Set(products.map(p => p.category))];
+  const getCategoryIcon = (category) => {
+    switch (category?.toLowerCase()) {
+      case 'electronics': return <Monitor size={24} />;
+      case 'footwear': return <Footprints size={24} />;
+      case 'kitchen': return <Utensils size={24} />;
+      case 'bags': return <ShoppingBag size={24} />;
+      default: return <LayoutGrid size={24} />;
+    }
+  };
+
+  const categories = ["All", "Electronics", "Footwear", "Kitchen", "Bags"];
 
   const filteredProducts = selectedCategory === "All"
     ? products
-    : products.filter(p => p.category === selectedCategory);
-
-  const handleAddToCart = (product) => {
-    addToCart(product);
-    setAddedMap(prev => ({ ...prev, [product.id]: true }));
-    setTimeout(() => {
-      setAddedMap(prev => ({ ...prev, [product.id]: false }));
-    }, 1500);
-  };
+    : products.filter(p => p.category?.toLowerCase() === selectedCategory.toLowerCase());
 
   if (loading) return (
     <div className="flex justify-center items-center h-96">
-      <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-900 border-t-transparent"></div>
     </div>
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
+    <div className="bg-gray-50/30 min-h-screen pb-16">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-3xl p-10 mb-12 flex items-center justify-between overflow-hidden relative">
+          <div className="z-10 max-w-xl">
+            <p className="text-gray-500 font-medium mb-2">#Big Fashion Sale</p>
+            <h1 className="text-5xl font-black text-gray-900 mb-4 leading-tight">
+              Limited Time Offer!<br />Up to <span className="italic text-gray-800">50% OFF!</span>
+            </h1>
+            <p className="text-gray-600 text-lg mb-8">Redefine Your Everyday Style</p>
+            {!isAuthenticated && (
+              <button
+                onClick={() => signIn()}
+                className="bg-gray-900 text-white font-semibold px-8 py-3 rounded-full hover:bg-gray-800 transition"
+              >
+                Sign In to Shop
+              </button>
+            )}
+          </div>
+          <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-gray-300/50 to-transparent flex items-center justify-center opacity-40">
+            <div className="w-64 h-64 bg-gray-400 rounded-full blur-3xl"></div>
+          </div>
+        </div>
 
-      {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-orange-500 to-orange-400 rounded-2xl p-8 mb-8 text-white">
-        <h1 className="text-4xl font-bold mb-2">Welcome to ShopEase 🛍️</h1>
-        <p className="text-orange-100 text-lg">Discover amazing products at great prices</p>
-        {!isAuthenticated && (
-          <button
-            onClick={() => signIn()}
-            className="mt-4 bg-white text-orange-500 font-semibold px-6 py-2 rounded-lg hover:bg-orange-50 transition"
-          >
-            Sign In to Shop →
-          </button>
-        )}
-      </div>
-
-      {/* Category Filter */}
-      <div className="flex gap-3 mb-6 overflow-x-auto pb-2">
-        {categories.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition ${
-              selectedCategory === cat
-                ? "bg-orange-500 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-orange-100"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredProducts.map(product => (
-          <div key={product.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition group">
-
-            {/* Product Image */}
-            <div className="relative overflow-hidden h-48 bg-gray-50">
-              <img
-                src={product.image_url}
-                alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-              />
-              {product.stock_quantity < 10 && product.stock_quantity > 0 && (
-                <span className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                  Only {product.stock_quantity} left!
-                </span>
-              )}
-              {product.stock_quantity === 0 && (
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <span className="bg-white text-gray-800 font-semibold px-4 py-2 rounded-lg">
-                    Out of Stock
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Product Info */}
-            <div className="p-4">
-              <span className="text-xs text-orange-500 font-medium bg-orange-50 px-2 py-1 rounded-full">
-                {product.category}
-              </span>
-              <h3 className="font-semibold text-gray-800 mt-2 mb-1">{product.name}</h3>
-              <p className="text-gray-500 text-sm mb-3 line-clamp-2">{product.description}</p>
-
-              <div className="flex items-center justify-between">
-                <span className="text-xl font-bold text-gray-800">
-                  ${product.price}
-                </span>
-                <div className="flex items-center gap-1 text-gray-400 text-sm">
-                  <Package size={14} />
-                  {product.stock_quantity} in stock
-                </div>
+        <div className="flex justify-center gap-6 sm:gap-10 mb-16 overflow-x-auto pb-4 no-scrollbar">
+          {categories.map(cat => (
+            <div 
+              key={cat} 
+              onClick={() => setSelectedCategory(cat)}
+              className="flex flex-col items-center gap-3 cursor-pointer group min-w-[80px]"
+            >
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+                selectedCategory === cat 
+                  ? "bg-gray-900 text-white shadow-lg" 
+                  : "bg-white text-gray-600 shadow-sm border border-gray-100 group-hover:bg-gray-50"
+              }`}>
+                {getCategoryIcon(cat)}
               </div>
+              <span className={`text-sm font-semibold transition-colors ${
+                selectedCategory === cat ? "text-gray-900" : "text-gray-500 group-hover:text-gray-900"
+              }`}>
+                {cat}
+              </span>
+            </div>
+          ))}
+        </div>
 
-              {/* Add to Cart Button */}
-              {isAuthenticated && userRole === "customer" ? (
-                <button
-                  onClick={() => handleAddToCart(product)}
-                  disabled={product.stock_quantity === 0}
-                  className={`w-full mt-3 py-2 rounded-xl font-medium flex items-center justify-center gap-2 transition ${
-                    addedMap[product.id]
-                      ? "bg-green-500 text-white"
-                      : product.stock_quantity === 0
-                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      : "bg-orange-500 text-white hover:bg-orange-600"
-                  }`}
-                >
-                  <ShoppingCart size={16} />
-                  {addedMap[product.id] ? "Added! ✓" : "Add to Cart"}
-                </button>
-              ) : (
-                <button
-                  onClick={() => signIn()}
-                  className="w-full mt-3 py-2 rounded-xl font-medium bg-gray-100 text-gray-600 hover:bg-orange-50 hover:text-orange-500 transition"
-                >
-                  Sign in to buy
-                </button>
-              )}
+        <div className="mb-16">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="bg-gray-900 text-white p-2 rounded-full">
+                <Clock size={20} />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Flash Sale</h2>
+              <div className="flex gap-2 text-white font-bold text-sm">
+                <span className="bg-red-500 px-2 py-1 rounded">03</span>
+                <span className="text-red-500">:</span>
+                <span className="bg-red-500 px-2 py-1 rounded">17</span>
+                <span className="text-red-500">:</span>
+                <span className="bg-red-500 px-2 py-1 rounded">35</span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button className="p-2 border border-gray-200 rounded-full hover:bg-gray-50"><ChevronLeft size={20} /></button>
+              <button className="p-2 bg-gray-900 text-white rounded-full hover:bg-gray-800"><ChevronRight size={20} /></button>
             </div>
           </div>
-        ))}
+
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {filteredProducts.slice(0, 5).map(product => (
+              <ProductCard key={product.id} product={product} addToCart={addToCart} isAuthenticated={isAuthenticated} userRole={userRole} signIn={signIn} isFlashSale={true} />
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+            <h2 className="text-2xl font-bold text-gray-900">Todays For You!</h2>
+            <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+              {['Best Seller', 'Keep Stylish', 'Special Discount', 'Official Store'].map(pill => (
+                <button key={pill} className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold text-gray-600 whitespace-nowrap hover:bg-gray-50">
+                  {pill}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {filteredProducts.map(product => (
+              <ProductCard key={product.id} product={product} addToCart={addToCart} isAuthenticated={isAuthenticated} userRole={userRole} signIn={signIn} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductCard({ product, addToCart, isAuthenticated, userRole, signIn, isFlashSale }) {
+  return (
+    <div className="bg-white rounded-2xl p-3 border border-gray-100 hover:shadow-xl transition-all duration-300 group cursor-pointer">
+      <div className="relative bg-gray-100 rounded-xl aspect-square overflow-hidden mb-4">
+        <img
+          src={product.image_url}
+          alt={product.name}
+          className="w-full h-full object-cover mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
+        />
+        <button className="absolute top-3 right-3 p-1.5 bg-white rounded-full text-gray-300 hover:text-red-500 transition-colors shadow-sm">
+          <Heart size={16} fill="currentColor" />
+        </button>
+      </div>
+
+      <div className="px-1">
+        <h3 className="font-semibold text-gray-800 text-sm mb-1 truncate">{product.name}</h3>
+        
+        <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center text-orange-400 text-xs font-bold">
+            <Star size={12} fill="currentColor" className="mr-1" />
+            4.9
+          </div>
+          <span className="text-gray-300 text-xs">•</span>
+          <span className="text-gray-500 text-xs">100+ Sold</span>
+        </div>
+
+        <div className="flex items-end gap-2 mb-4">
+          <span className="text-lg font-black text-gray-900">${product.price}</span>
+          {isFlashSale && <span className="text-xs text-gray-400 line-through mb-1">${(product.price * 1.5).toFixed(2)}</span>}
+        </div>
+
+        {isAuthenticated && userRole === "customer" ? (
+          <button
+            onClick={(e) => { e.stopPropagation(); addToCart(product); }}
+            disabled={product.stock_quantity === 0}
+            className="w-full py-2.5 rounded-xl font-bold text-sm bg-gray-900 text-white hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            <ShoppingCart size={16} />
+            {product.stock_quantity === 0 ? "Out of Stock" : "Add to Cart"}
+          </button>
+        ) : (
+          <button
+            onClick={(e) => { e.stopPropagation(); signIn(); }}
+            className="w-full py-2.5 rounded-xl font-bold text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+          >
+            Sign in to buy
+          </button>
+        )}
       </div>
     </div>
   );

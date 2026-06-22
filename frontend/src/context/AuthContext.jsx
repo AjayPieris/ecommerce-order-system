@@ -12,6 +12,7 @@ export const AppAuthProvider = ({ children }) => {
     getAccessToken,
     getDecodedIDToken,
     getBasicUserInfo,
+    getIDToken,
   } = useAuthContext();
 
   // Sign up: calls signIn() which redirects to Asgardeo login page.
@@ -84,7 +85,8 @@ export const AppAuthProvider = ({ children }) => {
 
   const registerCustomer = async (idToken) => {
     try {
-      const token = await getAccessToken();
+      // We also update this to use getIDToken() to prevent 401s on customer endpoints
+      const token = await getIDToken().catch(() => getAccessToken());
       const response = await axios.post(
         "http://localhost:9092/api/customers",
         {
@@ -106,8 +108,15 @@ export const AppAuthProvider = ({ children }) => {
   };
 
   const getAuthHeader = async () => {
-    const token = await getAccessToken();
-    return { Authorization: `Bearer ${token}` };
+    // Send ID token because Asgardeo issues opaque access tokens by default,
+    // which our backend cannot validate as a JWT.
+    try {
+      const token = await getIDToken();
+      return { Authorization: `Bearer ${token}` };
+    } catch (e) {
+      const token = await getAccessToken();
+      return { Authorization: `Bearer ${token}` };
+    }
   };
 
   return (

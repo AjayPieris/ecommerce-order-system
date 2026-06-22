@@ -102,67 +102,67 @@ export default function AdminInventory() {
 
   if (loading) return (
     <div className="flex justify-center items-center h-96">
-      <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-900 border-t-transparent"></div>
     </div>
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
-
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Inventory Management 📦</h1>
-          <p className="text-gray-400 text-sm">{products.length} products total</p>
+    <div className="bg-gray-50/30 min-h-screen pb-16">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-black text-gray-900">Inventory Management</h1>
+            <p className="text-gray-500 text-sm mt-1">{products.length} products total</p>
+          </div>
+          <button
+            onClick={() => { setShowForm(true); setEditingProduct(null); setForm(emptyForm); }}
+            className="flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-full hover:bg-gray-800 transition font-bold shadow-md shadow-gray-900/20"
+          >
+            <Plus size={18} />
+            <span>Add Product</span>
+          </button>
         </div>
-        <button
-          onClick={() => { setShowForm(true); setEditingProduct(null); setForm(emptyForm); }}
-          className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-xl hover:bg-orange-600 transition font-medium"
-        >
-          <Plus size={18} /> Add Product
-        </button>
-      </div>
 
-      {/* Products Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <table className="w-full">
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b border-gray-100">
-            <tr>
-              <th className="text-left p-4 text-sm font-semibold text-gray-600">Product</th>
-              <th className="text-left p-4 text-sm font-semibold text-gray-600">Category</th>
-              <th className="text-left p-4 text-sm font-semibold text-gray-600">Price</th>
-              <th className="text-left p-4 text-sm font-semibold text-gray-600">Stock</th>
-              <th className="text-left p-4 text-sm font-semibold text-gray-600">Status</th>
-              <th className="text-left p-4 text-sm font-semibold text-gray-600">Actions</th>
+            <tr className="bg-gray-50/50">
+              <th className="text-left py-4 px-6 font-semibold text-gray-500">Product</th>
+              <th className="text-left py-4 px-6 font-semibold text-gray-500">Category</th>
+              <th className="text-left py-4 px-6 font-semibold text-gray-500">Price</th>
+              <th className="text-left py-4 px-6 font-semibold text-gray-500">Stock</th>
+              <th className="text-left py-4 px-6 font-semibold text-gray-500">Status</th>
+              <th className="text-right py-4 px-6 font-semibold text-gray-500">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
             {products.map(product => (
-              <tr key={product.id} className="hover:bg-gray-50 transition">
-                <td className="p-4">
-                  <div className="flex items-center gap-3">
+              <tr key={product.id} className="hover:bg-gray-50/50 transition-colors group">
+                <td className="py-4 px-6">
+                  <div className="flex items-center gap-4">
                     <img
                       src={product.image_url}
                       alt={product.name}
-                      className="w-12 h-12 rounded-xl object-cover"
+                      className="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm"
                     />
                     <div>
-                      <p className="font-semibold text-gray-800">{product.name}</p>
+                      <p className="font-medium text-gray-900">{product.name}</p>
                       <p className="text-xs text-gray-400 max-w-48 truncate">{product.description}</p>
                     </div>
                   </div>
                 </td>
-                <td className="p-4">
-                  <span className="text-xs bg-orange-50 text-orange-500 px-2 py-1 rounded-full font-medium">
+                <td className="py-4 px-6">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                     {product.category}
                   </span>
                 </td>
-                <td className="p-4 font-bold text-gray-800">${product.price}</td>
-                <td className="p-4">
+                <td className="py-4 px-6 font-black text-gray-900">${product.price}</td>
+                <td className="py-4 px-6">
                   <input
                     type="number"
                     defaultValue={product.stock_quantity}
-                    className="w-20 border border-gray-200 rounded-lg px-2 py-1 text-sm text-center focus:outline-none focus:border-orange-400"
+                    className="w-20 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-center font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-all"
                     onBlur={(e) => {
                       if (parseInt(e.target.value) !== product.stock_quantity) {
                         handleStockUpdate(product, e.target.value);
@@ -170,7 +170,7 @@ export default function AdminInventory() {
                     }}
                   />
                 </td>
-                <td className="p-4">
+                <td className="py-4 px-6">
                   <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                     product.stock_quantity === 0
                       ? "bg-red-100 text-red-600"
@@ -185,8 +185,8 @@ export default function AdminInventory() {
                       : "In Stock"}
                   </span>
                 </td>
-                <td className="p-4">
-                  <div className="flex items-center gap-2">
+                <td className="py-4 px-6">
+                  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => handleEdit(product)}
                       className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition"
@@ -205,9 +205,9 @@ export default function AdminInventory() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
-      {/* Add/Edit Product Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
@@ -225,21 +225,38 @@ export default function AdminInventory() {
                 { label: "Product Name", field: "name", type: "text" },
                 { label: "Price ($)", field: "price", type: "number" },
                 { label: "Stock Quantity", field: "stock_quantity", type: "number" },
-                { label: "Category", field: "category", type: "text" },
               ].map(({ label, field, type }) => (
                 <div key={field}>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">{label}</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">{label}</label>
                   <input
                     type={type}
                     value={form[field]}
                     onChange={e => setForm(prev => ({ ...prev, [field]: e.target.value }))}
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 transition-all"
                   />
                 </div>
               ))}
 
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Product Image</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
+                <select
+                  value={form.category}
+                  onChange={e => setForm(prev => ({ ...prev, category: e.target.value }))}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 transition-all"
+                >
+                  <option value="" disabled>Select a category</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Clothing">Clothing</option>
+                  <option value="Books">Books</option>
+                  <option value="Home & Garden">Home & Garden</option>
+                  <option value="Toys">Toys</option>
+                  <option value="Sports">Sports</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Product Image</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -253,17 +270,17 @@ export default function AdminInventory() {
                       reader.readAsDataURL(file);
                     }
                   }}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-gray-900 file:text-white hover:file:bg-gray-800"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Description</label>
                 <textarea
                   value={form.description}
                   onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
                   rows={3}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400 resize-none"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 transition-all resize-none"
                 />
               </div>
 
@@ -279,14 +296,14 @@ export default function AdminInventory() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowForm(false)}
-                className="flex-1 py-2 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition"
+                className="flex-1 py-3.5 border border-gray-200 rounded-full font-bold text-gray-600 hover:bg-gray-50 transition"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={saving}
-                className="flex-1 py-2 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition disabled:opacity-50"
+                className="flex-1 py-3.5 bg-gray-900 text-white font-bold rounded-full hover:bg-gray-800 shadow-md shadow-gray-900/20 transition disabled:opacity-50"
               >
                 {saving ? "Saving..." : editingProduct ? "Update" : "Add Product"}
               </button>
@@ -295,7 +312,6 @@ export default function AdminInventory() {
         </div>
       )}
 
-      {/* Delete Confirm Modal */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full text-center">
@@ -319,6 +335,7 @@ export default function AdminInventory() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

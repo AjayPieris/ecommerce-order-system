@@ -63,7 +63,7 @@ export default function Cart() {
             </div>
             <div className="flex justify-between mb-2">
               <span className="text-gray-500">Total</span>
-              <span className="font-semibold text-orange-500">${orderSuccess.total_amount}</span>
+              <span className="font-bold text-gray-900">${orderSuccess.total_amount}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Status</span>
@@ -72,7 +72,7 @@ export default function Cart() {
           </div>
           <Link
             to="/orders"
-            className="block bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition"
+            className="block bg-gray-900 text-white py-3 rounded-full font-bold hover:bg-gray-800 transition shadow-md"
           >
             Track My Order →
           </Link>
@@ -90,7 +90,7 @@ export default function Cart() {
         <p className="text-gray-400 mb-6">Add some products to get started!</p>
         <Link
           to="/"
-          className="bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition"
+          className="bg-gray-900 text-white px-8 py-3 rounded-full font-bold hover:bg-gray-800 transition shadow-md inline-block"
         >
           Browse Products
         </Link>
@@ -99,47 +99,52 @@ export default function Cart() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Your Cart 🛒</h1>
+    <div className="bg-gray-50/30 min-h-screen pb-16">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h1 className="text-3xl font-black text-gray-900 mb-8">Shopping Cart</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {/* Cart Items */}
-        <div className="lg:col-span-2 space-y-4">
-          {cartItems.map(item => (
-            <div key={item.id} className="bg-white rounded-2xl border border-gray-100 p-4 flex gap-4 shadow-sm">
-              <img
-                src={item.image_url}
-                alt={item.name}
-                className="w-20 h-20 object-cover rounded-xl"
-              />
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-800">{item.name}</h3>
-                <p className="text-orange-500 font-bold">${item.price}</p>
-                <div className="flex items-center gap-3 mt-2">
+          {/* Cart Items */}
+          <div className="lg:col-span-2 space-y-4">
+            {cartItems.map(item => (
+              <div key={item.id} className="bg-white rounded-2xl border border-gray-100 p-4 flex gap-4 shadow-sm hover:shadow-md transition">
+                <div className="bg-gray-50 rounded-xl w-24 h-24 flex-shrink-0 flex items-center justify-center p-2">
+                  <img
+                    src={item.image_url}
+                    alt={item.name}
+                    className="w-full h-full object-cover mix-blend-multiply rounded-lg"
+                  />
+                </div>
+              <div className="flex-1 py-1 flex flex-col justify-between">
+                <div>
+                  <h3 className="font-semibold text-gray-800">{item.name}</h3>
+                  <p className="text-gray-900 font-black mt-1">${item.price}</p>
+                </div>
+                <div className="flex items-center gap-3">
                   <button
                     onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    className="p-1 rounded-lg bg-gray-100 hover:bg-orange-100 transition"
+                    className="p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition text-gray-600"
                   >
                     <Minus size={14} />
                   </button>
-                  <span className="font-semibold w-6 text-center">{item.quantity}</span>
+                  <span className="font-bold w-6 text-center text-sm">{item.quantity}</span>
                   <button
                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="p-1 rounded-lg bg-gray-100 hover:bg-orange-100 transition"
+                    className="p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition text-gray-600"
                   >
                     <Plus size={14} />
                   </button>
                   <button
                     onClick={() => removeFromCart(item.id)}
-                    className="ml-auto p-1 text-red-400 hover:text-red-600 transition"
+                    className="ml-auto p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition"
                   >
                     <Trash2 size={16} />
                   </button>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="font-bold text-gray-800">
+              <div className="text-right py-1">
+                <p className="font-black text-gray-900">
                   ${(item.price * item.quantity).toFixed(2)}
                 </p>
               </div>
@@ -147,46 +152,52 @@ export default function Cart() {
           ))}
         </div>
 
-        {/* Order Summary */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm h-fit">
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Order Summary</h2>
+          {/* Order Summary */}
+          <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-xl shadow-gray-200/20 h-fit sticky top-24">
+            <h2 className="text-xl font-black text-gray-900 mb-6">Order Summary</h2>
 
-          <div className="space-y-2 mb-4">
-            {cartItems.map(item => (
-              <div key={item.id} className="flex justify-between text-sm text-gray-500">
-                <span>{item.name} x{item.quantity}</span>
-                <span>${(item.price * item.quantity).toFixed(2)}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t pt-3 mb-4">
-            <div className="flex justify-between font-bold text-gray-800">
-              <span>Total</span>
-              <span className="text-orange-500">${totalPrice.toFixed(2)}</span>
+            <div className="space-y-3 mb-6">
+              {cartItems.map(item => (
+                <div key={item.id} className="flex justify-between text-sm text-gray-600">
+                  <span className="truncate pr-4">{item.name} <span className="font-bold text-gray-900 text-xs ml-1">x{item.quantity}</span></span>
+                  <span className="font-bold text-gray-900">${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+              ))}
             </div>
+
+            <div className="border-t border-gray-100 pt-4 mb-6">
+              <div className="flex justify-between font-black text-lg text-gray-900">
+                <span>Total</span>
+                <span>${totalPrice.toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Shipping Address */}
+            <div className="mb-6">
+              <label className="block text-sm font-bold text-gray-700 mb-2">Shipping Address</label>
+              <textarea
+                value={address}
+                onChange={e => setAddress(e.target.value)}
+                placeholder="Enter complete shipping address..."
+                rows={3}
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 resize-none transition-all"
+              />
+            </div>
+
+            {error && (
+              <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm mb-4 font-medium border border-red-100">
+                {error}
+              </div>
+            )}
+
+            <button
+              onClick={handlePlaceOrder}
+              disabled={loading}
+              className="w-full bg-gray-900 text-white py-3.5 rounded-full font-bold hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-gray-900/20 flex items-center justify-center gap-2"
+            >
+              {loading ? "Processing..." : "Secure Checkout"}
+            </button>
           </div>
-
-          {/* Shipping Address */}
-          <textarea
-            value={address}
-            onChange={e => setAddress(e.target.value)}
-            placeholder="Enter shipping address..."
-            rows={3}
-            className="w-full border border-gray-200 rounded-xl p-3 text-sm mb-3 focus:outline-none focus:border-orange-400 resize-none"
-          />
-
-          {error && (
-            <p className="text-red-500 text-sm mb-3">{error}</p>
-          )}
-
-          <button
-            onClick={handlePlaceOrder}
-            disabled={loading}
-            className="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition disabled:opacity-50"
-          >
-            {loading ? "Placing Order..." : "Place Order →"}
-          </button>
         </div>
       </div>
     </div>

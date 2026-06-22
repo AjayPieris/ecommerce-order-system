@@ -6,7 +6,8 @@ import ballerina/sql;
 import ballerina/jwt;
 import ballerina/time;
 import ballerina/crypto;
-import ballerina/mime;
+import ballerina/url;
+
 
 // product record types
 
@@ -46,40 +47,24 @@ configurable string CLOUDINARY_CLOUD_NAME = ?;
 configurable string CLOUDINARY_API_KEY = ?;
 configurable string CLOUDINARY_API_SECRET = ?;
 
+
+
 function uploadToCloudinary(string base64DataUri) returns string|error {
     http:Client cloudinaryClient = check new ("https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD_NAME);
 
     int timestamp = time:utcNow()[0];
     string stringToSign = "timestamp=" + timestamp.toString() + CLOUDINARY_API_SECRET;
     byte[] hash = crypto:hashSha1(stringToSign.toBytes());
-    string signature = hash.toBase16();
+    string signature = hash.toBase16().toLowerAscii();
 
-    mime:Entity filePart = new;
-    mime:ContentDisposition fileDisp = new;
-    fileDisp.name = "file";
-    filePart.setContentDisposition(fileDisp);
-    filePart.setText(base64DataUri);
-
-    mime:Entity apiKeyPart = new;
-    mime:ContentDisposition apiDisp = new;
-    apiDisp.name = "api_key";
-    apiKeyPart.setContentDisposition(apiDisp);
-    apiKeyPart.setText(CLOUDINARY_API_KEY);
-
-    mime:Entity timestampPart = new;
-    mime:ContentDisposition timeDisp = new;
-    timeDisp.name = "timestamp";
-    timestampPart.setContentDisposition(timeDisp);
-    timestampPart.setText(timestamp.toString());
-
-    mime:Entity signaturePart = new;
-    mime:ContentDisposition sigDisp = new;
-    sigDisp.name = "signature";
-    signaturePart.setContentDisposition(sigDisp);
-    signaturePart.setText(signature);
+    string encodedFile = check url:encode(base64DataUri, "UTF-8");
+    string payloadString = "file=" + encodedFile +
+                           "&api_key=" + CLOUDINARY_API_KEY +
+                           "&timestamp=" + timestamp.toString() +
+                           "&signature=" + signature;
 
     http:Request req = new;
-    req.setBodyParts([filePart, apiKeyPart, timestampPart, signaturePart]);
+    req.setTextPayload(payloadString, "application/x-www-form-urlencoded");
 
     http:Response resp = check cloudinaryClient->post("/image/upload", req);
     json payload = check resp.getJsonPayload();

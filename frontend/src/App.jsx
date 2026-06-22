@@ -28,29 +28,36 @@ const ProtectedRoute = ({ children, requiredRole }) => {
   return children;
 };
 
+import Footer from "./components/Footer";
+
 const AppContent = () => {
   return (
     <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/callback" element={<Callback />} />
-        <Route path="/cart" element={
-          <ProtectedRoute><Cart /></ProtectedRoute>
-        } />
-        <Route path="/orders" element={
-          <ProtectedRoute><OrderStatus /></ProtectedRoute>
-        } />
-        <Route path="/admin" element={
-          <ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>
-        } />
-        <Route path="/admin/inventory" element={
-          <ProtectedRoute requiredRole="admin"><AdminInventory /></ProtectedRoute>
-        } />
-        <Route path="/admin/orders" element={
-          <ProtectedRoute requiredRole="admin"><AdminOrders /></ProtectedRoute>
-        } />
-      </Routes>
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/callback" element={<Callback />} />
+            <Route path="/cart" element={
+              <ProtectedRoute><Cart /></ProtectedRoute>
+            } />
+            <Route path="/orders" element={
+              <ProtectedRoute><OrderStatus /></ProtectedRoute>
+            } />
+            <Route path="/admin" element={
+              <ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>
+            } />
+            <Route path="/admin/inventory" element={
+              <ProtectedRoute requiredRole="admin"><AdminInventory /></ProtectedRoute>
+            } />
+            <Route path="/admin/orders" element={
+              <ProtectedRoute requiredRole="admin"><AdminOrders /></ProtectedRoute>
+            } />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 };
