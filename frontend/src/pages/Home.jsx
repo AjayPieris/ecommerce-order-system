@@ -55,11 +55,11 @@ export default function Home() {
         
         <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-3xl p-10 mb-12 flex items-center justify-between overflow-hidden relative">
           <div className="z-10 max-w-xl">
-            <p className="text-gray-500 font-medium mb-2">#Big Fashion Sale</p>
+            <p className="text-gray-500 font-medium mb-2">#Mega Super Sale</p>
             <h1 className="text-5xl font-black text-gray-900 mb-4 leading-tight">
               Limited Time Offer!<br />Up to <span className="italic text-gray-800">50% OFF!</span>
             </h1>
-            <p className="text-gray-600 text-lg mb-8">Redefine Your Everyday Style</p>
+            <p className="text-gray-600 text-lg mb-8">Upgrade Your Tech, Style & Home</p>
             {!isAuthenticated && (
               <button
                 onClick={() => signIn()}
@@ -69,8 +69,8 @@ export default function Home() {
               </button>
             )}
           </div>
-          <div className="absolute right-0 top-0 bottom-0 w-full md:w-2/3 flex items-center justify-end overflow-hidden opacity-90">
-            <img src="/hero_banner.png" alt="Fashion Sale" className="h-full w-full object-contain object-right mix-blend-multiply opacity-90 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-full md:w-1/2 flex items-center justify-end overflow-hidden opacity-90">
+            <img src="/hero_banner.png" alt="Fashion Sale" className="h-full w-full object-cover object-left mix-blend-multiply opacity-90 pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-r from-gray-100/90 via-gray-100/30 to-transparent md:bg-gradient-to-r md:from-gray-100 md:via-transparent md:to-transparent"></div>
           </div>
         </div>
