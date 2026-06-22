@@ -5,6 +5,7 @@ import { CartProvider } from "./context/CartContext";
 // Pages
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
+import ProductDetails from "./pages/ProductDetails";
 import OrderStatus from "./pages/OrderStatus";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminInventory from "./pages/admin/Inventory";
@@ -39,6 +40,7 @@ const AppContent = () => {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/callback" element={<Callback />} />
             <Route path="/cart" element={
               <ProtectedRoute><Cart /></ProtectedRoute>

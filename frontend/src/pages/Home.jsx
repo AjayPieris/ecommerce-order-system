@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { productAPI } from "../services/api";
@@ -120,8 +121,12 @@ export default function Home() {
 }
 
 function ProductCard({ product, addToCart, isAuthenticated, userRole, signIn, isFlashSale }) {
+  const navigate = useNavigate();
   return (
-    <div className="bg-white rounded-2xl p-3 border border-gray-100 hover:shadow-xl transition-all duration-300 group cursor-pointer">
+    <div 
+      onClick={() => navigate(`/product/${product.id}`)}
+      className="bg-white rounded-2xl p-3 border border-gray-100 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+    >
       <div className="relative bg-gray-100 rounded-xl aspect-square overflow-hidden mb-4">
         <img
           src={product.image_url}
