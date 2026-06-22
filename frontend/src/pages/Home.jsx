@@ -96,34 +96,6 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="mb-16">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className="bg-gray-900 text-white p-2 rounded-full">
-                <Clock size={20} />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900">Flash Sale</h2>
-              <div className="flex gap-2 text-white font-bold text-sm">
-                <span className="bg-red-500 px-2 py-1 rounded">03</span>
-                <span className="text-red-500">:</span>
-                <span className="bg-red-500 px-2 py-1 rounded">17</span>
-                <span className="text-red-500">:</span>
-                <span className="bg-red-500 px-2 py-1 rounded">35</span>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button className="p-2 border border-gray-200 rounded-full hover:bg-gray-50"><ChevronLeft size={20} /></button>
-              <button className="p-2 bg-gray-900 text-white rounded-full hover:bg-gray-800"><ChevronRight size={20} /></button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {filteredProducts.slice(0, 5).map(product => (
-              <ProductCard key={product.id} product={product} addToCart={addToCart} isAuthenticated={isAuthenticated} userRole={userRole} signIn={signIn} isFlashSale={true} />
-            ))}
-          </div>
-        </div>
-
         <div>
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
             <h2 className="text-2xl font-bold text-gray-900">Todays For You!</h2>
