@@ -105,13 +105,15 @@ export default function Navbar() {
                     </Link>
                   )}
                   
-                  <Link 
-                    to="/orders" 
-                    onClick={() => setShowProfileMenu(false)}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium transition"
-                  >
-                    My Orders
-                  </Link>
+                  {userRole !== "admin" && (
+                    <Link 
+                      to="/orders" 
+                      onClick={() => setShowProfileMenu(false)}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium transition"
+                    >
+                      My Orders
+                    </Link>
+                  )}
                   
                   <div className="h-px bg-gray-50 my-2"></div>
                   
