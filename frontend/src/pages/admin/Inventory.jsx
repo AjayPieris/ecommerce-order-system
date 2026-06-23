@@ -7,6 +7,7 @@ const emptyForm = {
   name: "",
   description: "",
   price: "",
+  actual_price: "",
   stock_quantity: "",
   image_url: "",
   image_data: "",
@@ -45,6 +46,7 @@ export default function AdminInventory() {
       const data = {
         ...form,
         price: parseFloat(form.price),
+        actual_price: form.actual_price ? parseFloat(form.actual_price) : null,
         stock_quantity: parseInt(form.stock_quantity),
       };
 
@@ -71,6 +73,7 @@ export default function AdminInventory() {
       name: product.name,
       description: product.description,
       price: product.price.toString(),
+      actual_price: product.actual_price ? product.actual_price.toString() : "",
       stock_quantity: product.stock_quantity.toString(),
       image_url: product.image_url,
       image_data: "",
@@ -156,7 +159,12 @@ export default function AdminInventory() {
                     {product.category}
                   </span>
                 </td>
-                <td className="py-4 px-6 font-black text-gray-900">${product.price}</td>
+                <td className="py-4 px-6">
+                  <div className="font-black text-gray-900">LKR {product.price}</div>
+                  {product.actual_price && (
+                    <div className="text-xs text-gray-400 line-through">LKR {product.actual_price}</div>
+                  )}
+                </td>
                 <td className="py-4 px-6">
                   <input
                     type="number"
@@ -222,7 +230,8 @@ export default function AdminInventory() {
             <div className="space-y-4">
               {[
                 { label: "Product Name", field: "name", type: "text" },
-                { label: "Price ($)", field: "price", type: "number" },
+                { label: "Selling Price (LKR)", field: "price", type: "number" },
+                { label: "Actual Price (LKR) - Optional", field: "actual_price", type: "number" },
                 { label: "Stock Quantity", field: "stock_quantity", type: "number" },
               ].map(({ label, field, type }) => (
                 <div key={field}>

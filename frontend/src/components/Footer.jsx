@@ -9,8 +9,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 lg:gap-8">
           
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-2 mb-6">
-              <img src="/ShopEaseLogo.png" alt="ShopEase" className="h-48 w-auto brightness-0 invert" />
+            <div className="flex items-center gap-2 mb-4">
+              <img src="/ShopEaseLogo.png" alt="ShopEase" className="h-28 w-auto -my-8" />
             </div>
             <p className="text-sm text-gray-400 mb-6 leading-relaxed max-w-sm">
               Your ultimate destination for fashion, electronics, and lifestyle. Discover millions of products at unbeatable prices, delivered right to your doorstep.

@@ -100,7 +100,7 @@ export default function AdminDashboard() {
               { label: "Products", value: stats.totalProducts, icon: <Package size={20} />, color: "text-gray-900", bg: "bg-gray-100" },
               { label: "Orders", value: stats.totalOrders, icon: <ShoppingBag size={20} />, color: "text-gray-900", bg: "bg-gray-100" },
               { label: "Customers", value: stats.totalCustomers, icon: <Users size={20} />, color: "text-gray-900", bg: "bg-gray-100" },
-              { label: "Revenue", value: `$${stats.totalRevenue}`, icon: <TrendingUp size={20} />, color: "text-gray-900", bg: "bg-gray-100" },
+              { label: "Revenue", value: `LKR ${stats.totalRevenue}`, icon: <TrendingUp size={20} />, color: "text-gray-900", bg: "bg-gray-100" },
               { label: "Pending", value: stats.pendingOrders, icon: <Clock size={20} />, color: "text-yellow-600", bg: "bg-yellow-50" },
               { label: "Low Stock", value: stats.lowStockProducts, icon: <Bell size={20} />, color: "text-red-600", bg: "bg-red-50" },
             ].map((stat, i) => (
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
                       <p className="text-xs text-gray-500 mt-1">Customer #{order.customer_id}</p>
                     </div>
                   <div className="text-right">
-                    <p className="font-black text-gray-900 mb-1">${order.total_amount}</p>
+                    <p className="font-black text-gray-900 mb-1">LKR {order.total_amount}</p>
                     <span className={`text-xs px-2 py-0.5 rounded-full ${statusColor(order.status)}`}>
                       {order.status.replace(/_/g, " ")}
                     </span>

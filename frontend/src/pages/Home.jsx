@@ -7,6 +7,7 @@ import ProductCard from "../components/ProductCard";
 import { ShoppingCart, Star, Heart, Clock, ChevronRight, ChevronLeft, LayoutGrid, Monitor, Footprints, Utensils, ShoppingBag } from "lucide-react";
 
 export default function Home() {
+  const navigate = useNavigate();
   const { isAuthenticated, userRole, signIn } = useAppAuth();
   const { addToCart } = useCart();
   const [products, setProducts] = useState([]);
@@ -111,10 +112,20 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {filteredProducts.map(product => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {filteredProducts.slice(0, 8).map(product => (
               <ProductCard key={product.id} product={product} addToCart={addToCart} isAuthenticated={isAuthenticated} userRole={userRole} signIn={signIn} />
             ))}
+          </div>
+
+          <div className="mt-16 flex justify-center">
+            <button 
+              onClick={() => navigate("/products")}
+              className="px-8 py-4 bg-gray-900 text-white rounded-full font-bold text-lg hover:bg-gray-800 transition-colors shadow-lg shadow-gray-900/20 flex items-center gap-2"
+            >
+              View All Products
+              <ChevronRight size={20} />
+            </button>
           </div>
         </div>
       </div>

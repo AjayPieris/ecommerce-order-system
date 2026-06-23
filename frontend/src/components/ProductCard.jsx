@@ -12,7 +12,7 @@ export default function ProductCard({ product, addToCart, isAuthenticated, userR
         <img
           src={product.image_url}
           alt={product.name}
-          className="w-full h-full object-cover mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105 p-2"
         />
         <button className="absolute top-3 right-3 p-1.5 bg-white rounded-full text-gray-300 hover:text-red-500 transition-colors shadow-sm">
           <Heart size={16} fill="currentColor" />
@@ -31,12 +31,16 @@ export default function ProductCard({ product, addToCart, isAuthenticated, userR
           <span className="text-gray-500 text-xs">100+ Sold</span>
         </div>
 
-        <div className="flex items-end gap-2 mb-4 flex-grow">
-          <span className="text-lg font-black text-gray-900">LKR {product.price}</span>
+        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 mb-1 flex-grow">
+          <span className="text-lg font-black text-gray-900 leading-none">LKR {product.price}</span>
           {product.actual_price && (
-            <span className="text-xs text-gray-400 line-through mb-1">LKR {product.actual_price}</span>
+            <span className="text-xs text-gray-400 line-through leading-none">LKR {product.actual_price}</span>
           )}
         </div>
+        
+        <p className={`text-[11px] font-bold mb-3 ${product.stock_quantity < 10 ? 'text-red-500' : 'text-green-600'}`}>
+          {product.stock_quantity > 0 ? `${product.stock_quantity} in stock` : 'Out of stock'}
+        </p>
 
         {isAuthenticated && userRole === "customer" ? (
           <div className="flex gap-2 mt-auto">

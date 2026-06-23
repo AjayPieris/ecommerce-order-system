@@ -101,9 +101,9 @@ export default function ProductDetails() {
             </div>
 
             <div className="flex items-end gap-4 mb-6">
-              <span className="text-4xl font-black text-gray-900">${product.price}</span>
+              <span className="text-4xl font-black text-gray-900">LKR {product.price}</span>
               {product.actual_price && (
-                <span className="text-2xl font-bold text-gray-400 line-through mb-1">${product.actual_price}</span>
+                <span className="text-2xl font-bold text-gray-400 line-through mb-1">LKR {product.actual_price}</span>
               )}
             </div>
 
