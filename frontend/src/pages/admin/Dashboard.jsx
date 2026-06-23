@@ -54,7 +54,7 @@ export default function AdminDashboard() {
         totalProducts: products.length,
         totalOrders: orders.length,
         totalCustomers: customers.length,
-        totalRevenue: totalRevenue.toFixed(2),
+        totalRevenue: Math.round(totalRevenue).toLocaleString(),
         pendingOrders,
         lowStockProducts,
       });
@@ -97,18 +97,18 @@ export default function AdminDashboard() {
       {/* Stats Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4">
             {[
-              { label: "Products", value: stats.totalProducts, icon: <Package size={20} />, color: "text-gray-900", bg: "bg-gray-100" },
-              { label: "Orders", value: stats.totalOrders, icon: <ShoppingBag size={20} />, color: "text-gray-900", bg: "bg-gray-100" },
-              { label: "Customers", value: stats.totalCustomers, icon: <Users size={20} />, color: "text-gray-900", bg: "bg-gray-100" },
-              { label: "Revenue", value: `LKR ${stats.totalRevenue}`, icon: <TrendingUp size={20} />, color: "text-gray-900", bg: "bg-gray-100" },
-              { label: "Pending", value: stats.pendingOrders, icon: <Clock size={20} />, color: "text-yellow-600", bg: "bg-yellow-50" },
-              { label: "Low Stock", value: stats.lowStockProducts, icon: <Bell size={20} />, color: "text-red-600", bg: "bg-red-50" },
+              { label: "Products", value: stats.totalProducts, icon: <Package size={20} />, color: "text-gray-900", bg: "bg-gray-100", textClass: "text-2xl 2xl:text-3xl" },
+              { label: "Orders", value: stats.totalOrders, icon: <ShoppingBag size={20} />, color: "text-gray-900", bg: "bg-gray-100", textClass: "text-2xl 2xl:text-3xl" },
+              { label: "Customers", value: stats.totalCustomers, icon: <Users size={20} />, color: "text-gray-900", bg: "bg-gray-100", textClass: "text-2xl 2xl:text-3xl" },
+              { label: "Revenue", value: `LKR ${stats.totalRevenue}`, icon: <TrendingUp size={20} />, color: "text-gray-900", bg: "bg-gray-100", textClass: "text-xl xl:text-lg 2xl:text-2xl" },
+              { label: "Pending", value: stats.pendingOrders, icon: <Clock size={20} />, color: "text-yellow-600", bg: "bg-yellow-50", textClass: "text-2xl 2xl:text-3xl" },
+              { label: "Low Stock", value: stats.lowStockProducts, icon: <Bell size={20} />, color: "text-red-600", bg: "bg-red-50", textClass: "text-2xl 2xl:text-3xl" },
             ].map((stat, i) => (
               <div key={i} className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition">
                 <div className={`${stat.bg} ${stat.color} w-12 h-12 rounded-2xl flex items-center justify-center mb-4`}>
                   {stat.icon}
                 </div>
-                <p className="text-2xl 2xl:text-3xl font-black text-gray-900 truncate" title={stat.value}>{stat.value}</p>
+                <p className={`${stat.textClass} font-black text-gray-900 truncate`} title={stat.value}>{stat.value}</p>
                 <p className="text-sm font-medium text-gray-500 mt-1">{stat.label}</p>
               </div>
             ))}
