@@ -22,6 +22,7 @@ export const AppAuthProvider = ({ children }) => {
 
   const [userRole, setUserRole] = useState(null);
   const [customerId, setCustomerId] = useState(null);
+  const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export const AppAuthProvider = ({ children }) => {
       // Get decoded token to extract role
       const idToken = await getDecodedIDToken();
       const basicUserInfo = await getBasicUserInfo();
+      setUserInfo(basicUserInfo || {});
       
       console.log("ID Token:", idToken);
       console.log("Basic User Info:", basicUserInfo);
@@ -124,7 +126,7 @@ export const AppAuthProvider = ({ children }) => {
       value={{
         isAuthenticated: state.isAuthenticated,
         isLoading: state.isLoading || loading,
-        user: state,
+        user: { ...state, ...userInfo },
         userRole,
         customerId,
         signIn,

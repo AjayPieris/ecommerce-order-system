@@ -9,7 +9,7 @@ export default function Navbar() {
   const { totalItems } = useCart();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  const displayName = user?.name || (userRole === "admin" ? "Admin" : "Customer");
+  const displayName = user?.name || user?.givenName || user?.username?.split('@')[0] || (userRole === "admin" ? "Admin" : "Customer");
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
@@ -94,7 +94,7 @@ export default function Navbar() {
                 <div className="absolute right-0 mt-3 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl py-2 z-50 overflow-hidden">
                   <div className="px-4 py-2 border-b border-gray-50 mb-2">
                     <p className="text-xs text-gray-500">Signed in as</p>
-                    <p className="text-sm font-bold text-gray-900 truncate">{user?.email || (userRole === "admin" ? "admin@test.com" : "customer@test.com")}</p>
+                    <p className="text-sm font-bold text-gray-900 truncate">{user?.email || user?.username || (userRole === "admin" ? "admin@test.com" : "customer@test.com")}</p>
                   </div>
                   
                   {userRole === "admin" && (
