@@ -108,7 +108,7 @@ export default function AdminDashboard() {
                 <div className={`${stat.bg} ${stat.color} w-12 h-12 rounded-2xl flex items-center justify-center mb-4`}>
                   {stat.icon}
                 </div>
-                <p className="text-3xl font-black text-gray-900">{stat.value}</p>
+                <p className="text-2xl 2xl:text-3xl font-black text-gray-900 truncate" title={stat.value}>{stat.value}</p>
                 <p className="text-sm font-medium text-gray-500 mt-1">{stat.label}</p>
               </div>
             ))}

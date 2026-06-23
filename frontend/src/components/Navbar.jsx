@@ -39,13 +39,13 @@ export default function Navbar() {
       </div>
 
       {/* Main Navbar */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between gap-4 md:gap-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6 flex flex-wrap md:flex-nowrap items-center justify-between gap-4 md:gap-8">
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <img src="/ShopEaseLogo.png" alt="ShopEase" className="h-40 w-auto -my-14 relative z-50" />
+          <img src="/ShopEaseLogo.png" alt="ShopEase" className="h-24 md:h-40 w-auto -my-6 md:-my-14 relative z-50" />
         </Link>
 
         {/* Search Bar */}
-        <div className="flex-1 max-w-3xl flex items-center">
+        <div className="w-full md:flex-1 order-last md:order-none max-w-3xl flex items-center">
           <div className="flex w-full border border-gray-300 rounded-full overflow-hidden focus-within:border-gray-900 focus-within:ring-1 focus-within:ring-gray-900 transition">
             <div className="hidden md:flex items-center gap-1 bg-gray-50 px-4 py-2 border-r border-gray-300 text-sm text-gray-600 cursor-pointer hover:bg-gray-100">
               All Category <ChevronDown size={14} />

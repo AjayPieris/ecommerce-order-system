@@ -61,7 +61,7 @@ export default function Home() {
         <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-3xl p-10 mb-12 flex items-center justify-between overflow-hidden relative">
           <div className="z-10 max-w-xl">
             <p className="text-gray-500 font-medium mb-2">#Mega Super Sale</p>
-            <h1 className="text-5xl font-black text-gray-900 mb-4 leading-tight">
+            <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-4 leading-tight">
               Limited Time Offer!<br />Up to <span className="italic text-gray-800">50% OFF!</span>
             </h1>
             <p className="text-gray-600 text-lg mb-8">Upgrade Your Tech, Style & Home</p>

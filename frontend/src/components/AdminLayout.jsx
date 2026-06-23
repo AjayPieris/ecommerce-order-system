@@ -17,7 +17,7 @@ export default function AdminLayout() {
         
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Sidebar */}
-          <div className="lg:w-64 shrink-0">
+          <div className="w-full lg:w-64 shrink-0">
             <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm sticky top-8">
               <h2 className="text-xl font-black text-gray-900 mb-6">Admin Menu</h2>
               <div className="flex flex-col gap-2">
