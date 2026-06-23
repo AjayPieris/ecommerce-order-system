@@ -1,10 +1,12 @@
 import axios from "axios";
 
-const BASE_IP = import.meta.env.VITE_API_BASE_URL ? import.meta.env.VITE_API_BASE_URL.replace(/:9090$/, '') : "http://localhost";
-const PRODUCT_API = `${BASE_IP}:9090/api`;
-const ORDER_API = `${BASE_IP}:9091/api`;
-const CUSTOMER_API = `${BASE_IP}:9092/api`;
-const NOTIFICATION_API = `${BASE_IP}:9093/api`;
+const BASE_IP = import.meta.env.VITE_API_BASE_URL ? import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '').replace(/:9090$/, '') : "http://localhost";
+const isLocal = BASE_IP.includes("localhost") || import.meta.env.DEV;
+
+const PRODUCT_API = isLocal ? `${BASE_IP}:9090/api` : `${BASE_IP}/api`;
+const ORDER_API = isLocal ? `${BASE_IP}:9091/api` : `${BASE_IP}/api`;
+const CUSTOMER_API = isLocal ? `${BASE_IP}:9092/api` : `${BASE_IP}/api`;
+const NOTIFICATION_API = isLocal ? `${BASE_IP}:9093/api` : `${BASE_IP}/api`;
 
 // Product APIs
 export const productAPI = {

@@ -88,7 +88,7 @@ export const AppAuthProvider = ({ children }) => {
       // We also update this to use getIDToken() to prevent 401s on customer endpoints
       const token = await getIDToken().catch(() => getAccessToken());
       const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL ? import.meta.env.VITE_API_BASE_URL.replace(/:9090$/, '') : "http://localhost"}:9092/api/customers`,
+        `${import.meta.env.VITE_API_BASE_URL && !import.meta.env.VITE_API_BASE_URL.includes("localhost") ? import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '').replace(/:9090$/, '') + '/api/customers' : 'http://localhost:9092/api/customers'}`,
         {
           asgardeo_user_id: idToken.sub,
           email: idToken.email || state.username,
