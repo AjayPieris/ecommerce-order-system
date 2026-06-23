@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { productAPI } from "../services/api";
+import ProductCard from "../components/ProductCard";
 import { ShoppingCart, Star, Heart, Clock, ChevronRight, ChevronLeft, LayoutGrid, Monitor, Footprints, Utensils, ShoppingBag } from "lucide-react";
 
 export default function Home() {
@@ -51,7 +52,7 @@ export default function Home() {
 
   return (
     <div className="bg-gray-50/30 min-h-screen pb-16">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         
         <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-3xl p-10 mb-12 flex items-center justify-between overflow-hidden relative">
           <div className="z-10 max-w-xl">
@@ -116,63 +117,6 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function ProductCard({ product, addToCart, isAuthenticated, userRole, signIn, isFlashSale }) {
-  const navigate = useNavigate();
-  return (
-    <div 
-      onClick={() => navigate(`/product/${product.id}`)}
-      className="bg-white rounded-2xl p-3 border border-gray-100 hover:shadow-xl transition-all duration-300 group cursor-pointer"
-    >
-      <div className="relative bg-gray-100 rounded-xl aspect-square overflow-hidden mb-4">
-        <img
-          src={product.image_url}
-          alt={product.name}
-          className="w-full h-full object-cover mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
-        />
-        <button className="absolute top-3 right-3 p-1.5 bg-white rounded-full text-gray-300 hover:text-red-500 transition-colors shadow-sm">
-          <Heart size={16} fill="currentColor" />
-        </button>
-      </div>
-
-      <div className="px-1">
-        <h3 className="font-semibold text-gray-800 text-sm mb-1 truncate">{product.name}</h3>
-        
-        <div className="flex items-center gap-2 mb-2">
-          <div className="flex items-center text-orange-400 text-xs font-bold">
-            <Star size={12} fill="currentColor" className="mr-1" />
-            4.9
-          </div>
-          <span className="text-gray-300 text-xs">•</span>
-          <span className="text-gray-500 text-xs">100+ Sold</span>
-        </div>
-
-        <div className="flex items-end gap-2 mb-4">
-          <span className="text-lg font-black text-gray-900">${product.price}</span>
-          {isFlashSale && <span className="text-xs text-gray-400 line-through mb-1">${(product.price * 1.5).toFixed(2)}</span>}
-        </div>
-
-        {isAuthenticated && userRole === "customer" ? (
-          <button
-            onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-            disabled={product.stock_quantity === 0}
-            className="w-full py-2.5 rounded-xl font-bold text-sm bg-gray-900 text-white hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            <ShoppingCart size={16} />
-            {product.stock_quantity === 0 ? "Out of Stock" : "Add to Cart"}
-          </button>
-        ) : (
-          <button
-            onClick={(e) => { e.stopPropagation(); signIn(); }}
-            className="w-full py-2.5 rounded-xl font-bold text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-          >
-            Sign in to buy
-          </button>
-        )}
       </div>
     </div>
   );

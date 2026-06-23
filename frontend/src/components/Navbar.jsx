@@ -36,10 +36,9 @@ export default function Navbar() {
       </div>
 
       {/* Main Navbar */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4 md:gap-8">
-        <Link to="/" className="flex items-center gap-2">
-          <Package size={28} className="text-gray-900" />
-          <span className="text-2xl font-black tracking-tight text-gray-900 hidden sm:block">ShopEase</span>
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between gap-4 md:gap-8">
+        <Link to="/" className="flex items-center gap-2 shrink-0">
+          <img src="/ShopEaseLogo.png" alt="ShopEase" className="h-40 w-auto -my-14 relative z-50" />
         </Link>
 
         {/* Search Bar */}

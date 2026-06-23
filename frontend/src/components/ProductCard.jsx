@@ -6,7 +6,7 @@ export default function ProductCard({ product, addToCart, isAuthenticated, userR
   return (
     <div 
       onClick={() => navigate(`/product/${product.id}`)}
-      className="bg-white rounded-2xl p-3 border border-gray-100 hover:shadow-xl transition-all duration-300 group cursor-pointer h-full flex flex-col"
+      className="bg-white rounded-2xl p-4 border border-gray-100 hover:shadow-xl transition-all duration-300 group cursor-pointer h-full flex flex-col"
     >
       <div className="relative bg-gray-100 rounded-xl aspect-square overflow-hidden mb-4">
         <img
@@ -19,7 +19,7 @@ export default function ProductCard({ product, addToCart, isAuthenticated, userR
         </button>
       </div>
 
-      <div className="px-1 flex flex-col flex-grow">
+      <div className="px-2 flex flex-col flex-grow">
         <h3 className="font-semibold text-gray-800 text-sm mb-1 line-clamp-2">{product.name}</h3>
         
         <div className="flex items-center gap-2 mb-2">
@@ -39,14 +39,29 @@ export default function ProductCard({ product, addToCart, isAuthenticated, userR
         </div>
 
         {isAuthenticated && userRole === "customer" ? (
-          <button
-            onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-            disabled={product.stock_quantity === 0}
-            className="w-full py-2.5 rounded-xl font-bold text-sm bg-gray-900 text-white hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-auto"
-          >
-            <ShoppingCart size={16} />
-            {product.stock_quantity === 0 ? "Out of Stock" : "Add to Cart"}
-          </button>
+          <div className="flex gap-2 mt-auto">
+            <button
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                addToCart(product);
+                navigate("/cart");
+              }}
+              disabled={product.stock_quantity === 0}
+              className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-gray-900 text-white hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            >
+              {product.stock_quantity === 0 ? "Out of Stock" : "Order Now"}
+            </button>
+            <button
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                addToCart(product); 
+              }}
+              disabled={product.stock_quantity === 0}
+              className="w-[44px] shrink-0 rounded-xl bg-gray-100 text-gray-900 hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center border border-gray-200"
+            >
+              <ShoppingCart size={18} />
+            </button>
+          </div>
         ) : (
           <button
             onClick={(e) => { e.stopPropagation(); signIn(); }}
