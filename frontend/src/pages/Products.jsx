@@ -18,7 +18,7 @@ export default function Products() {
   
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = 8;
 
   useEffect(() => {
     window.scrollTo(0, 0);
