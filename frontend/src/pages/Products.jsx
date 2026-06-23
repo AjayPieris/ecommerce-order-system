@@ -18,7 +18,7 @@ export default function Products() {
   
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 4;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -36,7 +36,7 @@ export default function Products() {
     }
   };
 
-  const categories = ["All", "Electronics", "Footwear", "Kitchen", "Bags"];
+  const categories = ["All", "Electronics", "Clothing", "Books", "Home & Garden", "Toys", "Sports", "Other"];
 
   // Filter products
   const filteredProducts = products.filter(product => {
@@ -80,7 +80,7 @@ export default function Products() {
               <button 
                 key={cat} 
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors LKR ${
+                className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
                   selectedCategory === cat 
                     ? "bg-gray-900 text-white" 
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -146,7 +146,7 @@ export default function Products() {
               <button
                 key={idx}
                 onClick={() => setCurrentPage(idx + 1)}
-                className={`w-10 h-10 rounded-xl font-bold text-sm transition-colors LKR ${
+                className={`w-10 h-10 rounded-xl font-bold text-sm transition-colors ${
                   currentPage === idx + 1
                     ? "bg-gray-900 text-white"
                     : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"

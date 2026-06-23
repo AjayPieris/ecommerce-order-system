@@ -4,7 +4,7 @@ import { useAppAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { productAPI } from "../services/api";
 import ProductCard from "../components/ProductCard";
-import { ShoppingCart, Star, Heart, Clock, ChevronRight, ChevronLeft, LayoutGrid, Monitor, Footprints, Utensils, ShoppingBag } from "lucide-react";
+import { ShoppingCart, Star, Heart, Clock, ChevronRight, ChevronLeft, LayoutGrid, Monitor, Shirt, Book, Leaf, Gamepad2, Dumbbell, Package } from "lucide-react";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -32,14 +32,17 @@ export default function Home() {
   const getCategoryIcon = (category) => {
     switch (category?.toLowerCase()) {
       case 'electronics': return <Monitor size={24} />;
-      case 'footwear': return <Footprints size={24} />;
-      case 'kitchen': return <Utensils size={24} />;
-      case 'bags': return <ShoppingBag size={24} />;
+      case 'clothing': return <Shirt size={24} />;
+      case 'books': return <Book size={24} />;
+      case 'home & garden': return <Leaf size={24} />;
+      case 'toys': return <Gamepad2 size={24} />;
+      case 'sports': return <Dumbbell size={24} />;
+      case 'other': return <Package size={24} />;
       default: return <LayoutGrid size={24} />;
     }
   };
 
-  const categories = ["All", "Electronics", "Footwear", "Kitchen", "Bags"];
+  const categories = ["All", "Electronics", "Clothing", "Books", "Home & Garden", "Toys", "Sports", "Other"];
 
   const filteredProducts = selectedCategory === "All"
     ? products
