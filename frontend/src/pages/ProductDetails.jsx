@@ -16,6 +16,7 @@ export default function ProductDetails() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchProduct = async () => {
       try {
         const res = await productAPI.getById(id);
@@ -99,8 +100,11 @@ export default function ProductDetails() {
               <span className="text-gray-600 font-medium">100+ Sold</span>
             </div>
 
-            <div className="text-4xl font-black text-gray-900 mb-6">
-              ${product.price}
+            <div className="flex items-end gap-4 mb-6">
+              <span className="text-4xl font-black text-gray-900">${product.price}</span>
+              {product.actual_price && (
+                <span className="text-2xl font-bold text-gray-400 line-through mb-1">${product.actual_price}</span>
+              )}
             </div>
 
             <p className="text-gray-600 leading-relaxed mb-8 text-lg">

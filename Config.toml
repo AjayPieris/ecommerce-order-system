@@ -1,0 +1,11 @@
+dbHost = "ep-dark-frog-adx0s0s1-pooler.c-2.us-east-1.aws.neon.tech"
+dbPort = 5432
+dbName = "neondb"
+dbUser = "neondb_owner"
+dbPassword = "npg_xsG4RTEDgLn9"
+asgardeoIssuer = "https://api.asgardeo.io/t/ajaypieris/oauth2/token"
+asgardeoJwksUrl = "https://api.asgardeo.io/t/ajaypieris/oauth2/jwks"
+
+CLOUDINARY_CLOUD_NAME="dthxdevpi"
+CLOUDINARY_API_KEY="472428345362933"
+CLOUDINARY_API_SECRET="IMpDCaX_WLorD35WWnRz9wPjRCU"

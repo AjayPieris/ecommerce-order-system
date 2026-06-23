@@ -16,6 +16,7 @@ type Product record {|
     string name;
     string description;
     decimal price;
+    decimal? actual_price?;
     int stock_quantity;
     string image_url;
     string category;
@@ -25,6 +26,7 @@ type NewProduct record {|
     string name;
     string description;
     decimal price;
+    decimal? actual_price?;
     int stock_quantity;
     string image_url?;
     string image_data?;
@@ -89,6 +91,15 @@ final postgresql:Client dbClient = check new (
     }
 );
 
+function init() returns error? {
+    sql:ExecutionResult|sql:Error result = dbClient->execute(`ALTER TABLE products ADD COLUMN actual_price DECIMAL(10,2)`);
+    if result is sql:Error {
+        log:printInfo("Column actual_price may already exist: " + result.message());
+    } else {
+        log:printInfo("Added actual_price column successfully.");
+    }
+}
+
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:5173"],
@@ -103,7 +114,7 @@ service /api/products on new http:Listener(9090) {
     resource function get .() returns Product[]|error {
         log:printInfo("Fetching all products");
 
-        sql:ParameterizedQuery query = `SELECT id, name, description, price, 
+        sql:ParameterizedQuery query = `SELECT id, name, description, price, actual_price, 
                                         stock_quantity, image_url, category 
                                         FROM products ORDER BY id`;
 
@@ -122,7 +133,7 @@ service /api/products on new http:Listener(9090) {
     resource function get [int id]() returns Product|http:NotFound|error {
         log:printInfo("Fetching product #" + id.toString());
 
-        sql:ParameterizedQuery query = `SELECT id, name, description, price,
+        sql:ParameterizedQuery query = `SELECT id, name, description, price, actual_price,
                                         stock_quantity, image_url, category
                                         FROM products WHERE id = ${id}`;
 
@@ -139,7 +150,7 @@ service /api/products on new http:Listener(9090) {
     resource function get category/[string categoryName]() returns Product[]|error {
         log:printInfo("Fetching products in category: " + categoryName);
 
-        sql:ParameterizedQuery query = `SELECT id, name, description, price,
+        sql:ParameterizedQuery query = `SELECT id, name, description, price, actual_price,
                                         stock_quantity, image_url, category
                                         FROM products WHERE category = ${categoryName}
                                         ORDER BY id`;
@@ -174,11 +185,11 @@ service /api/products on new http:Listener(9090) {
         }
 
         sql:ParameterizedQuery query = `INSERT INTO products 
-                                        (name, description, price, stock_quantity, image_url, category)
+                                        (name, description, price, actual_price, stock_quantity, image_url, category)
                                         VALUES (${newProduct.name}, ${newProduct.description},
-                                        ${newProduct.price}, ${newProduct.stock_quantity},
+                                        ${newProduct.price}, ${newProduct?.actual_price}, ${newProduct.stock_quantity},
                                         ${finalImageUrl}, ${newProduct.category})
-                                        RETURNING id, name, description, price, 
+                                        RETURNING id, name, description, price, actual_price, 
                                         stock_quantity, image_url, category`;
 
         Product result = check dbClient->queryRow(query);
@@ -200,11 +211,12 @@ service /api/products on new http:Listener(9090) {
                                         name = ${updatedProduct.name},
                                         description = ${updatedProduct.description},
                                         price = ${updatedProduct.price},
+                                        actual_price = ${updatedProduct?.actual_price},
                                         stock_quantity = ${updatedProduct.stock_quantity},
                                         image_url = ${finalImageUrl},
                                         category = ${updatedProduct.category}
                                         WHERE id = ${id}
-                                        RETURNING id, name, description, price,
+                                        RETURNING id, name, description, price, actual_price,
                                         stock_quantity, image_url, category`;
 
         Product|sql:Error result = dbClient->queryRow(query);
@@ -223,7 +235,7 @@ service /api/products on new http:Listener(9090) {
         sql:ParameterizedQuery query = `UPDATE products SET
                                         stock_quantity = ${stockUpdate.stock_quantity}
                                         WHERE id = ${id}
-                                        RETURNING id, name, description, price,
+                                        RETURNING id, name, description, price, actual_price,
                                         stock_quantity, image_url, category`;
 
         Product|sql:Error result = dbClient->queryRow(query);
