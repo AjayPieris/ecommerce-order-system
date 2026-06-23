@@ -21,6 +21,11 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchDashboardData();
   }, []);
+  const formatCurrency = (num) => {
+    if (num >= 1000000) return (num / 1000000).toFixed(2) + "M";
+    if (num >= 1000) return (num / 1000).toFixed(1) + "K";
+    return Math.round(num).toString();
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -54,7 +59,7 @@ export default function AdminDashboard() {
         totalProducts: products.length,
         totalOrders: orders.length,
         totalCustomers: customers.length,
-        totalRevenue: Math.round(totalRevenue).toLocaleString(),
+        totalRevenue: formatCurrency(totalRevenue),
         pendingOrders,
         lowStockProducts,
       });
@@ -100,7 +105,7 @@ export default function AdminDashboard() {
               { label: "Products", value: stats.totalProducts, icon: <Package size={20} />, color: "text-gray-900", bg: "bg-gray-100", textClass: "text-2xl 2xl:text-3xl" },
               { label: "Orders", value: stats.totalOrders, icon: <ShoppingBag size={20} />, color: "text-gray-900", bg: "bg-gray-100", textClass: "text-2xl 2xl:text-3xl" },
               { label: "Customers", value: stats.totalCustomers, icon: <Users size={20} />, color: "text-gray-900", bg: "bg-gray-100", textClass: "text-2xl 2xl:text-3xl" },
-              { label: "Revenue", value: `LKR ${stats.totalRevenue}`, icon: <TrendingUp size={20} />, color: "text-gray-900", bg: "bg-gray-100", textClass: "text-xl xl:text-lg 2xl:text-2xl" },
+              { label: "Revenue", value: `LKR ${stats.totalRevenue}`, icon: <TrendingUp size={20} />, color: "text-gray-900", bg: "bg-gray-100", textClass: "text-2xl 2xl:text-3xl" },
               { label: "Pending", value: stats.pendingOrders, icon: <Clock size={20} />, color: "text-yellow-600", bg: "bg-yellow-50", textClass: "text-2xl 2xl:text-3xl" },
               { label: "Low Stock", value: stats.lowStockProducts, icon: <Bell size={20} />, color: "text-red-600", bg: "bg-red-50", textClass: "text-2xl 2xl:text-3xl" },
             ].map((stat, i) => (
