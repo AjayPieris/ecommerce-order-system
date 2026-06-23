@@ -9,6 +9,9 @@ export default function Navbar() {
   const { totalItems } = useCart();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
+  const displayName = user?.name || (userRole === "admin" ? "Admin" : "Customer");
+  const initial = displayName.charAt(0).toUpperCase();
+
   return (
     <div className="bg-white shadow-sm sticky top-0 z-50">
       {/* Top thin bar */}
@@ -79,11 +82,11 @@ export default function Navbar() {
                 className="flex items-center gap-3 pl-4 border-l border-gray-200 focus:outline-none"
               >
                 <div className="flex flex-col items-end hidden md:flex">
-                  <span className="text-xs font-bold text-gray-900">Hello, {user?.name || (userRole === "admin" ? "Admin" : "Customer")}</span>
+                  <span className="text-xs font-bold text-gray-900">Hello, {displayName}</span>
                   <span className="text-[10px] text-gray-500">My Account</span>
                 </div>
-                <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition">
-                  <User size={16} />
+                <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition font-bold text-sm">
+                  {initial}
                 </div>
               </button>
 
