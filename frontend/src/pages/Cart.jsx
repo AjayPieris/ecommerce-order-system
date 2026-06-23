@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useAppAuth } from "../context/AuthContext";
 import { orderAPI } from "../services/api";
-import { Trash2, Plus, Minus, ShoppingBag, CheckCircle } from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingBag, CheckCircle, PartyPopper } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Cart() {
@@ -54,7 +54,7 @@ export default function Cart() {
       <div className="max-w-lg mx-auto px-6 py-16 text-center">
         <div className="bg-white rounded-2xl shadow-sm border p-8">
           <CheckCircle className="mx-auto text-green-500 mb-4" size={64} />
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Order Placed! 🎉</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">Order Placed! <PartyPopper className="text-yellow-500" size={28} /></h2>
           <p className="text-gray-500 mb-4">Your order has been confirmed and is being processed.</p>
           <div className="bg-gray-50 rounded-xl p-4 mb-6 text-left">
             <div className="flex justify-between mb-2">
