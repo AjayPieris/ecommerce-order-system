@@ -103,48 +103,10 @@ User → React App → Asgardeo Login/Register → OAuth Redirect → JWT Token 
 
 ## 📐 Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                          CLIENT LAYER                               │
-│                                                                     │
-│   React 19 + Vite + TailwindCSS 4          AWS Amplify (Frontend)  │
-│   @asgardeo/auth-react SDK                                         │
-│                                                                     │
-└──────────────────────────┬──────────────────────────────────────────┘
-                           │ HTTPS (JWT Bearer Token)
-                           ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                     API GATEWAY / REVERSE PROXY                     │
-│                                                                     │
-│              Caddy Server (TLS + CORS + Path Routing)              │
-│                                                                     │
-│   /api/products/*  → :9090    /api/orders/*     → :9091            │
-│   /api/customers/* → :9092    /api/notifications/* → :9093          │
-│                                                                     │
-└──────────────────────────┬──────────────────────────────────────────┘
-                           │
-         ┌─────────────────┼─────────────────┐
-         ▼                 ▼                 ▼
-┌─────────────┐  ┌──────────────┐  ┌──────────────┐  ┌────────────────┐
-│  Product    │  │   Order      │  │  Customer    │  │  Notification  │
-│  Service    │  │   Service    │  │  Service     │  │  Service       │
-│  :9090      │  │   :9091      │  │  :9092       │  │  :9093         │
-│  (Ballerina)│  │  (Ballerina) │  │ (Ballerina)  │  │  (Ballerina)   │
-└──────┬──────┘  └──────┬───────┘  └──────┬───────┘  └───────┬────────┘
-       │                │                 │                   │
-       └────────────────┴─────────────────┴───────────────────┘
-                           │
-                           ▼
-              ┌──────────────────────┐       ┌─────────────────────┐
-              │   PostgreSQL (Neon)  │       │   WSO2 Asgardeo     │
-              │   Cloud Database     │       │   (OIDC / JWKS)     │
-              └──────────────────────┘       └─────────────────────┘
-                                                       │
-                                              ┌────────┴────────┐
-                                              │  Cloudinary CDN │
-                                              │  (Image Upload) │
-                                              └─────────────────┘
-```
+<p align="center">
+  <img src="docs/images/architecture-diagram.jpg" alt="ShopEase System Architecture" width="100%"/>
+  <br/><em>System Architecture Diagram — Created with Visual Paradigm</em>
+</p>
 
 ---
 
