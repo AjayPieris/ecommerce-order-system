@@ -10,12 +10,12 @@ public function validateToken(http:Request req) returns jwt:Payload|http:Unautho
     string|http:HeaderNotFoundError authHeader = req.getHeader("Authorization");
 
     if authHeader is http:HeaderNotFoundError {
-        log:printWarn("⛔ No Authorization header found");
+        log:printWarn(" No Authorization header found");
         return http:UNAUTHORIZED;
     }
 
     if !authHeader.startsWith("Bearer ") {
-        log:printWarn("⛔ Invalid Authorization format");
+        log:printWarn(" Invalid Authorization format");
         return http:UNAUTHORIZED;
     }
 
@@ -35,7 +35,7 @@ public function validateToken(http:Request req) returns jwt:Payload|http:Unautho
     jwt:Payload|jwt:Error result = jwt:validate(token, validatorConfig);
 
     if result is jwt:Error {
-        log:printWarn("⛔ JWT validation failed: " + result.message());
+        log:printWarn(" JWT validation failed: " + result.message());
         return http:UNAUTHORIZED;
     }
 
